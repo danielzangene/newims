@@ -9,11 +9,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 
-@Configuration
-@EnableJpaRepositories(basePackages = {"ir.newims.ims.application.repo"})
-@EnableTransactionManagement
+//@Configuration
+//@EnableJpaRepositories(basePackages = {"ir.newims.ims.application.repo"})
+//@EnableTransactionManagement
 public class JpaConfig {
-    @Bean
+//    @Bean
     public LocalEntityManagerFactoryBean entityManagerFactory() {
         LocalEntityManagerFactoryBean factoryBean = new LocalEntityManagerFactoryBean();
         factoryBean.setPersistenceUnitName("database");
@@ -21,7 +21,7 @@ public class JpaConfig {
         return factoryBean;
     }
 
-    @Bean
+//    @Bean
     public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory);
