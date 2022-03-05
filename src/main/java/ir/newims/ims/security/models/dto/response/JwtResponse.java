@@ -5,12 +5,14 @@ public class JwtResponse {
   private Long id;
   private String username;
   private String email;
+  private int status;
 
-  public JwtResponse(String accessToken, Long id, String username, String email) {
+  public JwtResponse(String accessToken, Long id, String username, String email, int status) {
     this.token = accessToken;
     this.id = id;
     this.username = username;
     this.email = email;
+    this.status = status;
   }
 
   public String getAccessToken() {
@@ -45,4 +47,11 @@ public class JwtResponse {
     this.username = username;
   }
 
+  public int getStatus() {
+    return status;
+  }
+
+  public void setStatus(int status) {
+    this.status = status;
+  }
 }
