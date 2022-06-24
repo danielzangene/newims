@@ -16,6 +16,16 @@ public class RestExceptionHandler {
         return ResponseEntity.internalServerError().body(response);
     }
 
+    @ExceptionHandler(AccessException.class)
+    public ResponseEntity accessExceptionHandler(AccessException e) {
+        Response response = new Response(ResponseConstant.SC_METHOD_NOT_ALLOWED, getAccessMessageHandler(e.getUseCaseName()));
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    private String getAccessMessageHandler(String useCaseName) {
+        return String.format(ResponseConstantMessage.SC_METHOD_NOT_ALLOWED, useCaseName);
+    }
+
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity businessExceptionHandler(BusinessException e) {
         Response response = new Response(e.getCode(), e.getMessage());

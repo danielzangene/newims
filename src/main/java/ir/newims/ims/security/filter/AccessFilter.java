@@ -1,5 +1,9 @@
 package ir.newims.ims.security.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ir.newims.ims.ResponseConstant;
+import ir.newims.ims.ResponseConstantMessage;
+import ir.newims.ims.exception.Response;
 import ir.newims.ims.models.SystemAccess;
 import ir.newims.ims.security.SecurityCodes;
 import ir.newims.ims.security.repository.SystemAccessRepository;
@@ -8,7 +12,6 @@ import ir.newims.ims.security.services.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class AccessFilter extends OncePerRequestFilter {
 
@@ -44,8 +48,9 @@ public class AccessFilter extends OncePerRequestFilter {
         if (hasPermission(method, requestURI)) {
             filterChain.doFilter(request, response);
         } else {
-            response.setStatus(HttpStatus.METHOD_NOT_ALLOWED.value());
-            filterChain.doFilter(request, response);
+            Optional<SystemAccess> systemAccess = systemAccessRepository.findByMethodAndRequestUri(method, requestURI);
+            Response responseObject = new Response(ResponseConstant.SC_METHOD_NOT_ALLOWED, getAccessMessageHandler(systemAccess.get().getName()));
+            new ObjectMapper().writeValue(response.getOutputStream(), responseObject);
         }
     }
 
@@ -56,10 +61,17 @@ public class AccessFilter extends OncePerRequestFilter {
     }
 
     private Boolean hasPermission(String method, String uri) {
+        Optional<SystemAccess> systemAccess = systemAccessRepository.findByMethodAndRequestUri(method, uri);
+        if (!systemAccess.isPresent()) return Boolean.TRUE;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = SecurityCodes.ANONYMOUS_USER;
         if (!isAnonymousUser()) username = ((UserDetailsImpl) authentication.getPrincipal()).getUsername();
         List<SystemAccess> systemAccesses = systemAccessRepository.userHasAccess(username, method, uri);
         return !systemAccesses.isEmpty();
     }
+
+    private String getAccessMessageHandler(String useCaseName) {
+        return String.format(ResponseConstantMessage.SC_METHOD_NOT_ALLOWED, useCaseName);
+    }
+
 }

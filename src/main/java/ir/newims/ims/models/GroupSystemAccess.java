@@ -12,8 +12,8 @@ public class GroupSystemAccess extends SimpleEntity {
 
     @ManyToMany
     @JoinTable(name = "mm_groupAccess",
-            joinColumns = @JoinColumn(name = "access_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id"))
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "access_id"))
     public List<SystemAccess> getAccessList() {
         return accessList;
     }
