@@ -19,7 +19,7 @@ public class RestExceptionHandler {
     @ExceptionHandler(AccessException.class)
     public ResponseEntity accessExceptionHandler(AccessException e) {
         Response response = new Response(ResponseConstant.SC_METHOD_NOT_ALLOWED, getAccessMessageHandler(e.getUseCaseName()));
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.ok().body(response);
     }
 
     private String getAccessMessageHandler(String useCaseName) {
@@ -29,13 +29,13 @@ public class RestExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity businessExceptionHandler(BusinessException e) {
         Response response = new Response(e.getCode(), e.getMessage());
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.ok().body(response);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity badCredentialsExceptionHandler(BadCredentialsException e) {
         Response response = new Response(ResponseConstant.SC_BAD_REQUEST, ResponseConstantMessage.INVALID_LOGIN_DATA);
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.ok().body(response);
     }
 
 

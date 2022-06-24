@@ -48,6 +48,6 @@ public interface ResponseConstantMessage {
     //100000 range
     String EMAIL_EXIST = "ایمیل وارد شده در سیستم موجود میباشد";
     String USERNAME_EXIST = "نام کاربری وارد شده در سیستم موجود میباشد";
-    String INVALID_LOGIN_DATA = "نام کاربری یا رمزعبور به سیستم به درستی وارد نشده.";
+    String INVALID_LOGIN_DATA = "نام کاربری یا رمزعبور به درستی وارد نشده.";
 
 }
