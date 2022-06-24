@@ -1,15 +1,17 @@
 package ir.newims.ims.security.controllers;
 
-import ir.newims.ims.security.models.User;
-import ir.newims.ims.security.models.dto.request.LoginRequest;
-import ir.newims.ims.security.models.dto.request.SignupRequest;
-import ir.newims.ims.security.models.dto.response.JwtResponse;
-import ir.newims.ims.security.models.dto.response.MessageResponse;
+import ir.newims.ims.ResponseConstant;
+import ir.newims.ims.ResponseConstantMessage;
+import ir.newims.ims.exception.BusinessException;
+import ir.newims.ims.exception.DataResponse;
+import ir.newims.ims.exception.Response;
+import ir.newims.ims.models.User;
+import ir.newims.ims.security.dto.request.LoginRequest;
+import ir.newims.ims.security.dto.request.SignupRequest;
+import ir.newims.ims.security.dto.response.LoginResponse;
 import ir.newims.ims.security.repository.UserRepository;
-import ir.newims.ims.security.jwt.JwtUtils;
-import ir.newims.ims.security.services.UserDetailsImpl;
+import ir.newims.ims.security.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,10 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -41,48 +40,27 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = null;
-        try {
-            authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        } catch (Exception e) {
-            final Map<String, Object> body = new HashMap<>();
-            body.put("status", HttpServletResponse.SC_NOT_FOUND);
-            body.put("error", "Unauthorized");
-            body.put("message", "رمز عبور یا نام کاربری به درستی وارد نشده.");
-            return ResponseEntity.ok(body);
-        }
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                HttpStatus.OK.value()));
+        return ResponseEntity.ok(DataResponse.SUCCESS_RESPONSE.setResultData(new LoginResponse(jwt)));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+            throw new BusinessException(ResponseConstant.USERNAME_EXIST, ResponseConstantMessage.USERNAME_EXIST);
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+            throw new BusinessException(ResponseConstant.EMAIL_EXIST, ResponseConstantMessage.EMAIL_EXIST);
         }
 
         // Create new user's account
-        User user = new User(signUpRequest.getUsername(),
-                signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
-
-
+        User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(), encoder.encode(signUpRequest.getPassword()));
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok(Response.SUCCESS_RESPONSE);
     }
 }

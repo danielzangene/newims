@@ -1,4 +1,4 @@
-package ir.newims.ims.security.jwt;
+package ir.newims.ims.security.filter;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ir.newims.ims.security.SecurityCodes;
+import ir.newims.ims.security.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import ir.newims.ims.security.services.UserDetailsServiceImpl;
@@ -32,10 +33,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-    try {
-      System.out.println(AuthTokenFilter.class);
+      logger.info(AuthTokenFilter.class.toString());
       String jwt = parseJwt(request);
-      if (Objects.nonNull(jwt) && !"null".equals(jwt) && jwtUtils.validateJwtToken(jwt)) {
+      if (Objects.nonNull(jwt) && !SecurityCodes.NULL_STRING.equals(jwt) && jwtUtils.validateJwtToken(jwt)) {
         String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -48,14 +48,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
-    } catch (Exception e) {
-      logger.error("Cannot set user authentication: {}", e);
-    }
-
     filterChain.doFilter(request, response);
   }
 
   private String parseJwt(HttpServletRequest request) {
-    return request.getHeader("Authorization");
+    return request.getHeader(SecurityCodes.AUTHORIZATION);
   }
 }

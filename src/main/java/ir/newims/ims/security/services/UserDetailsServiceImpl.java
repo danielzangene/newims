@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ir.newims.ims.security.models.User;
+import ir.newims.ims.models.User;
 import ir.newims.ims.security.repository.UserRepository;
 
 @Service

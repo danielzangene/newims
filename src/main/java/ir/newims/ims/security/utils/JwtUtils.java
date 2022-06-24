@@ -1,9 +1,7 @@
-package ir.newims.ims.security.jwt;
+package ir.newims.ims.security.utils;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

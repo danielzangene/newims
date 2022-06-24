@@ -1,7 +1,7 @@
 package ir.newims.ims.security.repository;
 
-import ir.newims.ims.security.models.SystemAccess;
-import ir.newims.ims.security.models.User;
+import ir.newims.ims.models.SystemAccess;
+import ir.newims.ims.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,10 +12,23 @@ import java.util.Optional;
 
 @Repository
 public interface SystemAccessRepository extends JpaRepository<SystemAccess, Long> {
-    @Query("SELECT a FROM User u " +
-            "INNER JOIN u.accessList AS a " +
-            "WHERE u = ?1 AND a = ?2 " +
-            "")
+
+    @Query("SELECT systemAccess FROM User user " +
+            "INNER JOIN user.groupAccess AS groupAccess " +
+            "INNER JOIN groupAccess.accessList AS systemAccess " +
+            "WHERE user = ?1 " +
+            "AND systemAccess = ?2 ")
     List<SystemAccess> userHasAccess(@Param("user") User user, @Param("systemAccess") SystemAccess systemAccess);
+
+    @Query("SELECT systemAccess FROM User user " +
+            "INNER JOIN user.groupAccess AS groupAccess " +
+            "INNER JOIN groupAccess.accessList AS systemAccess " +
+            "WHERE user.username = ?1 " +
+            "AND systemAccess.method = ?2 " +
+            "AND systemAccess.requestUri = ?3 ")
+    List<SystemAccess> userHasAccess(@Param("username") String username,
+                                     @Param("method") String method,
+                                     @Param("uri") String uri);
+
     Optional<SystemAccess> findByMethodAndRequestUri(String systemMethod, String systemRequestUri);
 }

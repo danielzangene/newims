@@ -1,0 +1,33 @@
+package ir.newims.ims.models;
+
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = "t_GroupSystemAccess")
+public class GroupSystemAccess extends SimpleEntity {
+
+    private List<SystemAccess> accessList;
+    private String name;
+
+    @ManyToMany
+    @JoinTable(name = "mm_groupAccess",
+            joinColumns = @JoinColumn(name = "access_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id"))
+    public List<SystemAccess> getAccessList() {
+        return accessList;
+    }
+
+    @Column(name = "c_name")
+    public String getName() {
+        return name;
+    }
+
+    public void setAccessList(List<SystemAccess> accessList) {
+        this.accessList = accessList;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}

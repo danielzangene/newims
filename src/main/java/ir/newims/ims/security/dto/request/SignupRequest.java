@@ -1,4 +1,4 @@
-package ir.newims.ims.security.models.dto.request;
+package ir.newims.ims.security.dto.request;
 
 import java.util.Set;
 

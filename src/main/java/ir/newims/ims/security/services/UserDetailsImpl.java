@@ -1,6 +1,6 @@
 package ir.newims.ims.security.services;
 
-import ir.newims.ims.security.models.User;
+import ir.newims.ims.models.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,4 +1,4 @@
-package ir.newims.ims.security.models;
+package ir.newims.ims.models;
 
 import java.util.List;
 
@@ -15,23 +15,19 @@ import javax.validation.constraints.Size;
 public class User extends BaseEntity {
 
   @NotBlank
-  @Size(max = 20)
+  @Size(max = 50)
   private String username;
 
   @NotBlank
-  @Size(max = 50)
+  @Size(max = 100)
   @Email
   private String email;
 
   @NotBlank
-  @Size(max = 120)
+  @Size(max = 1000)
   private String password;
 
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(  name = "mm_UserAccess",
-          joinColumns = @JoinColumn(name = "user_id"),
-          inverseJoinColumns = @JoinColumn(name = "systemAccess_id"))
-  private List<SystemAccess> accessList;
+  private List<GroupSystemAccess> groupAccess;
 
   public User() {
   }
@@ -40,6 +36,18 @@ public class User extends BaseEntity {
     this.username = username;
     this.email = email;
     this.password = password;
+  }
+
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(name = "mm_userGroupAccess",
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "group_id"))
+  public List<GroupSystemAccess> getGroupAccess() {
+    return groupAccess;
+  }
+
+  public void setGroupAccess(List<GroupSystemAccess> groupAccess) {
+    this.groupAccess = groupAccess;
   }
 
   public String getUsername() {
@@ -66,11 +74,4 @@ public class User extends BaseEntity {
     this.password = password;
   }
 
-  public List<SystemAccess> getAccessList() {
-    return accessList;
-  }
-
-  public void setAccessList(List<SystemAccess> accessList) {
-    this.accessList = accessList;
-  }
 }
