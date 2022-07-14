@@ -2,10 +2,12 @@ package ir.newims.ims.application.utils;
 
 import com.ghasemkiani.util.SimplePersianCalendar;
 
-import java.util.Calendar;
-import java.util.Objects;
+import java.util.*;
 
 public class DateUtil {
+
+    private static String[] persianMoths = new String[]{"فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "بهمن", "اسفند"};
+    private static String[] daysOfWeek = new String[]{"شنبه", "یک\u200Cشنبه", "دوشنبه", "سه\u200Cشنبه", "چهارشنبه", "پنج\u200Cشنبه", "جمعه"};
 
     public static String getCurrentDate() {
         SimplePersianCalendar persianCalendar = new SimplePersianCalendar();
@@ -18,6 +20,51 @@ public class DateUtil {
         int year = persianCalendar.getDateFields().getYear();
         persianCalendar.setTime(clonedCal.getTime());
         return getDate(year, month, day);
+    }
+
+    public static String getCurrentDate(Calendar cal) {
+        SimplePersianCalendar persianCalendar = new SimplePersianCalendar();
+        Calendar clonedCal = (Calendar) cal.clone();
+        cal.set(Calendar.HOUR_OF_DAY, 6);
+        persianCalendar.setTime(cal.getTime());
+        int day = persianCalendar.getDateFields().getDay();
+        int month = persianCalendar.getDateFields().getMonth() + 1;
+        int year = persianCalendar.getDateFields().getYear();
+        persianCalendar.setTime(clonedCal.getTime());
+        return getDate(year, month, day);
+    }
+
+    public static List<String> getWeek(int threshold) {
+        String[] days = new String[7];
+        Calendar now = Calendar.getInstance();
+        int delta = -now.get(GregorianCalendar.DAY_OF_WEEK) + (threshold * 7);
+        now.add(Calendar.DAY_OF_MONTH, delta);
+        for (int i = 0; i < 7; i++) {
+            days[i] = getCurrentDate(now);
+            now.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return Arrays.asList(days);
+    }
+
+    public static List<String> thisWeek() {
+        return getWeek(0);
+    }
+
+    public static Set<String> getCurrentWeekDates() {
+        Set<String> days = new HashSet<>();
+        SimplePersianCalendar persianCalendar = new SimplePersianCalendar();
+        Calendar cal = Calendar.getInstance();
+        Calendar clonedCal = (Calendar) cal.clone();
+        cal.set(Calendar.HOUR_OF_DAY, 6);
+        persianCalendar.setTime(cal.getTime());
+        int day = persianCalendar.getDateFields().getDay();
+        int month = persianCalendar.getDateFields().getMonth() + 1;
+        int year = persianCalendar.getDateFields().getYear();
+        persianCalendar.setTime(clonedCal.getTime());
+        String persianDate = getDate(year, month, day);
+
+        int firstDayOfWeek = persianCalendar.getFirstDayOfWeek();
+        return days;
     }
 
     public static String getCurrentDateTime() {
@@ -38,6 +85,21 @@ public class DateUtil {
         int millSecond = persianCalendar.get(Calendar.MILLISECOND);
         String persianTime = getTime(hour, minute, second, millSecond);
         return persianDate + "-" + persianTime;
+    }
+    public static String getCurrentTime() {
+        SimplePersianCalendar persianCalendar = new SimplePersianCalendar();
+        Calendar cal = Calendar.getInstance();
+        Calendar clonedCal = (Calendar) cal.clone();
+        cal.set(Calendar.HOUR_OF_DAY, 6);
+        persianCalendar.setTime(cal.getTime());
+        persianCalendar.setTime(clonedCal.getTime());
+
+        int hour = persianCalendar.get(Calendar.HOUR_OF_DAY);
+        int minute = persianCalendar.get(Calendar.MINUTE);
+        int second = persianCalendar.get(Calendar.SECOND);
+        int millSecond = persianCalendar.get(Calendar.MILLISECOND);
+        String persianTime = getTime(hour, minute, second, millSecond);
+        return persianTime;
     }
 
     private static String getDate(int year, int month, int day) {
@@ -70,6 +132,30 @@ public class DateUtil {
         } else {
             throw new UnsupportedOperationException();
         }
+    }
+
+    public static String getFormattedDate(String date, int dayOfWeek) {
+        String[] splittedDate = date.split("/");
+        return daysOfWeek[dayOfWeek] + "  " + Integer.valueOf(splittedDate[2]) + "  " + persianMoths[Integer.valueOf(splittedDate[1])];
+    }
+
+    public static String getPersianMonth(String date) {
+        String[] splittedDate = date.split("/");
+        return persianMoths[Integer.valueOf(splittedDate[1])];
+    }
+
+    public static String getFormattedWeek(List<String> days) {
+        String[] splittedFirstDate = days.get(0).split("/");
+        String[] splittedLastDate = days.get(6).split("/");
+        Integer firstDayMounth = Integer.valueOf(splittedFirstDate[1]);
+        Integer lastDayMounth = Integer.valueOf(splittedLastDate[1]);
+        Integer firstDay = Integer.valueOf(splittedFirstDate[2]);
+        Integer lastDay = Integer.valueOf(splittedLastDate[2]);
+        if (lastDayMounth == firstDayMounth) {
+            return firstDay + " تا " + lastDay + " " + persianMoths[firstDayMounth];
+        }
+        return firstDay + " " + persianMoths[firstDayMounth] + " تا " + lastDay + " " + persianMoths[lastDayMounth];
+
     }
 //1400/12/14-11:24.56.005
 }

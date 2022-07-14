@@ -20,7 +20,7 @@ public interface ResponseConstantMessage {
     String SC_NOT_MODIFIED = "";
     String SC_USE_PROXY = "";
     String SC_TEMPORARY_REDIRECT = "";
-    String SC_BAD_REQUEST = "اطلاعات ورود به سیستم به درستی وارد نشده.";
+    String SC_BAD_REQUEST = "اطلاعات به درستی وارد نشده.";
     String SC_UNAUTHORIZED = "مدت زمان اعتبار توکن شما به پایان رسیده، لطفا مجدد وارد شوید.";
     String SC_PAYMENT_REQUIRED = "";
     String SC_FORBIDDEN = "";
@@ -48,6 +48,9 @@ public interface ResponseConstantMessage {
     //100000 range
     String EMAIL_EXIST = "ایمیل وارد شده در سیستم موجود میباشد";
     String USERNAME_EXIST = "نام کاربری وارد شده در سیستم موجود میباشد";
+    String USERNAME_NOT_EXIST  = "نام کاربری وارد شده در سیستم موجود نمی باشد";
     String INVALID_LOGIN_DATA = "نام کاربری یا رمزعبور به درستی وارد نشده.";
 
+    String INVALID_FOOT_WORK_LOG_DATA = "ساعت ورود/خروج را به درستی وارد نشده.";
+    String INVALID_FOOT_WORK_LOG_ID  = "ایدی لاگ مورد نظر به درستی وارد نشده.";
 }

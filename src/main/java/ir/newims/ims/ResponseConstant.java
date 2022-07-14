@@ -45,7 +45,16 @@ public interface ResponseConstant {
     int SC_GATEWAY_TIMEOUT = 504;
     int SC_HTTP_VERSION_NOT_SUPPORTED = 505;
 
-    //100000 range
-    Integer EMAIL_EXIST = 100001;
-    Integer USERNAME_EXIST = 100002;
+    // 999999999
+
+    // personnel and filter 1000000 -> 1005000
+    Integer EMAIL_EXIST = 1000002;
+    Integer USERNAME_EXIST = 1000002;
+    Integer USERNAME_NOT_EXIST = 1000003;
+
+    // ** footWorkCodes  1000000 -> 1005000
+
+    Integer INVALID_FOOT_WORK_LOG_DATA = 1005001;
+    Integer INVALID_FOOT_WORK_LOG_ID = 1005002;
+
 }

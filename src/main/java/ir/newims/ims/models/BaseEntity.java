@@ -1,7 +1,12 @@
 package ir.newims.ims.models;
 
+import ir.newims.ims.application.utils.DateUtil;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 @MappedSuperclass
 public class BaseEntity extends SimpleEntity {
@@ -26,4 +31,18 @@ public class BaseEntity extends SimpleEntity {
     public void setLastModifiedDateTime(String lastModifiedDateTime) {
         this.lastModifiedDateTime = lastModifiedDateTime;
     }
+
+    @PrePersist
+    protected void onCreate() {
+        String currentDateTime = DateUtil.getCurrentDateTime();
+        creationDateTime = currentDateTime;
+        lastModifiedDateTime = currentDateTime;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        creationDateTime = creationDateTime;
+        lastModifiedDateTime = DateUtil.getCurrentDateTime();
+    }
+
 }

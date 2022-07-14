@@ -3,7 +3,9 @@ package ir.newims.ims.exception;
 import ir.newims.ims.ResponseConstant;
 import ir.newims.ims.ResponseConstantMessage;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -13,10 +15,17 @@ public class RestExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity defaultExceptionHandler(Exception e) {
         Response response = new Response(ResponseConstant.INTERNAL_ERROR, ResponseConstantMessage.INTERNAL_ERROR);
-        return ResponseEntity.internalServerError().body(response);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity defaultMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        Response response = new Response(ResponseConstant.SC_BAD_REQUEST, ResponseConstantMessage.SC_BAD_REQUEST);
+        return ResponseEntity.ok().body(response);
     }
 
     @ExceptionHandler(AccessException.class)
+//    HttpMessageNotReadableException
     public ResponseEntity accessExceptionHandler(AccessException e) {
         Response response = new Response(ResponseConstant.SC_METHOD_NOT_ALLOWED, getAccessMessageHandler(e.getUseCaseName()));
         return ResponseEntity.ok().body(response);
