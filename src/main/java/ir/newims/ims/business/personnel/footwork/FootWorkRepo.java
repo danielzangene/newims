@@ -15,6 +15,12 @@ public interface FootWorkRepo extends JpaRepository<FootWorkLog, Long> {
 
     @Query("SELECT footWorkLog FROM FootWorkLog footWorkLog " +
             "WHERE footWorkLog.user = ?2 " +
+            "AND footWorkLog.date like ?1% " +
+            "order by footWorkLog.time ASC")
+    List<FootWorkLog> findAllThisMonthLog(@Param("date") String date, @Param("user") User user);
+
+    @Query("SELECT footWorkLog FROM FootWorkLog footWorkLog " +
+            "WHERE footWorkLog.user = ?2 " +
             "AND footWorkLog.date in (?1) " +
             "order by footWorkLog.time ASC")
     List<FootWorkLog> findAllByDatesAndUser(@Param("dates") List<String> dates, @Param("user") User user);

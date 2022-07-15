@@ -6,9 +6,7 @@ import ir.newims.ims.application.utils.DateUtil;
 import ir.newims.ims.business.personnel.footwork.dto.request.DeleteFootWorkLogRequest;
 import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkDaySheetRequest;
 import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkLogRequest;
-import ir.newims.ims.business.personnel.footwork.dto.response.DayFootWorksResponse;
-import ir.newims.ims.business.personnel.footwork.dto.response.DayFootWorksTotalLogResponse;
-import ir.newims.ims.business.personnel.footwork.dto.response.WeekFootWorksResponse;
+import ir.newims.ims.business.personnel.footwork.dto.response.*;
 import ir.newims.ims.business.personnel.personnel.UserService;
 import ir.newims.ims.exception.BusinessException;
 import ir.newims.ims.models.personnel.footwork.FootWorkLog;
@@ -17,10 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -69,7 +64,7 @@ public class FootWorkOperational implements FootWorkService {
         return String.format("%02d%02d", totalHour, totalMin);
     }
 
-    private String getTotalWeek(List<String> totalDays) {
+    private String getTotaDays(List<String> totalDays) {
         int totalMin = 0;
         int totalHour = 0;
         if (!totalDays.isEmpty()) {
@@ -129,7 +124,7 @@ public class FootWorkOperational implements FootWorkService {
         return new WeekFootWorksResponse(
                 formattedWeek,
                 DateUtil.getCurrentDate(),
-                getTotalWeek(daysFootWork.stream().map(DayFootWorksResponse::getTotalDay).collect(Collectors.toList())),
+                getTotaDays(daysFootWork.stream().map(DayFootWorksResponse::getTotalDay).collect(Collectors.toList())),
                 daysFootWork);
 
     }
@@ -155,5 +150,84 @@ public class FootWorkOperational implements FootWorkService {
         footWorkRepo.delete(footWorkLog);
         List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDateAndUserOrderByTime(footWorkLog.getDate(), currentUser);
         return new DayFootWorksResponse(footWorkLog.getDate(), getTotalDay(footWorkLogs), null, footWorkLogs);
+    }
+
+    @Override
+    public MonthFootWorkSummaryResponse currentMonthSummary() {
+        String monthTotalWorkTime = monthTotalWorkTime(DateUtil.getCurrentDate());
+        return new MonthFootWorkSummaryResponse(
+                DateUtil.getPersianMonth(DateUtil.getCurrentDate()),
+                monthTotalWorkTime,
+                "0000",
+                "0000",
+                "0000"
+        );
+    }
+
+    @Override
+    public MonthFootWorkAllDaysResponse currentMonthAllDaysLog() {
+        List<String> daysFootWork = getMonthAllWorkTime(DateUtil.getCurrentDate());
+        return new MonthFootWorkAllDaysResponse(
+                Arrays.asList(
+                        new MonthFootWorkAllDaysElementResponse(
+                                "ماه جاری",
+                                daysFootWork
+                        ),
+                        new MonthFootWorkAllDaysElementResponse(
+                                "ماه قبل",
+                                daysFootWork.stream().sorted(Collections.reverseOrder()).collect(Collectors.toList())
+                        )
+                )
+        );
+    }
+
+    private String monthTotalWorkTime(String dayOfMonth) {
+        List<String> daysFootWork = getMonthAllWorkTime(dayOfMonth);
+        return getTotaDays(daysFootWork);
+    }
+
+    private List<String> getMonthAllWorkTime(String dayOfMonth) {
+        List<String> month = DateUtil.getMonth();
+        String substring = dayOfMonth.substring(0, 8);
+        List<FootWorkLog> allThisMonthLog = footWorkRepo.findAllThisMonthLog(substring, userService.getCurrentUser());
+        Map<String, List<FootWorkLog>> footWorkLogMap = allThisMonthLog.stream().collect(Collectors.groupingBy(FootWorkLog::getDate));
+        List<String> daysFootWork = new ArrayList<>();
+
+        for (String key : month) {
+            List<FootWorkLog> footWorkLogsOfDay = footWorkLogMap.containsKey(key) ? footWorkLogMap.get(key) : new ArrayList<>();
+            daysFootWork.add(getTotalDay(footWorkLogsOfDay));
+        }
+        return daysFootWork;
+    }
+
+    @Override
+    public WeekFootWorksSummaryResponse currentWeekSummary() throws Exception {
+        List<String> days = DateUtil.getWeek(0);
+        User currentUser = userService.getCurrentUser();
+        List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDatesAndUser(days, currentUser);
+        Map<String, List<FootWorkLog>> footWorkLogMap = footWorkLogs.stream().collect(Collectors.groupingBy(FootWorkLog::getDate));
+        List<DayFootWorkSummaryResponse> daysFootWork = new ArrayList<>();
+        String formattedWeek = DateUtil.getFormattedWeek(days);
+        for (int i = 0; i < days.size(); i++) {
+            String key = days.get(i);
+            List<FootWorkLog> footWorkLogsOfDay = footWorkLogMap.containsKey(key) ? footWorkLogMap.get(key) : new ArrayList<>();
+            daysFootWork.add(new DayFootWorkSummaryResponse(
+                    key,
+                    DateUtil.getFormattedDateWithoutName(key),
+                    DateUtil.getPersianDaysOfWeek(i),
+                    false,
+                    getTotalDay(footWorkLogsOfDay),
+                    "0000",
+                    footWorkLogsOfDay.size() % 2 != 0,
+                    footWorkLogsOfDay.isEmpty()
+
+            ));
+        }
+        return new WeekFootWorksSummaryResponse(
+                formattedWeek,
+                DateUtil.getCurrentDate(),
+                daysFootWork
+        );
+
     }
 }

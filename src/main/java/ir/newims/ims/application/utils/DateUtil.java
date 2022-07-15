@@ -46,25 +46,27 @@ public class DateUtil {
         return Arrays.asList(days);
     }
 
-    public static List<String> thisWeek() {
-        return getWeek(0);
-    }
-
-    public static Set<String> getCurrentWeekDates() {
-        Set<String> days = new HashSet<>();
+    public static List<String> getMonth() {
         SimplePersianCalendar persianCalendar = new SimplePersianCalendar();
         Calendar cal = Calendar.getInstance();
         Calendar clonedCal = (Calendar) cal.clone();
         cal.set(Calendar.HOUR_OF_DAY, 6);
         persianCalendar.setTime(cal.getTime());
-        int day = persianCalendar.getDateFields().getDay();
+
+        int actualMaximumDaysInMonth = persianCalendar.getActualMaximum(SimplePersianCalendar.DAY_OF_MONTH);
         int month = persianCalendar.getDateFields().getMonth() + 1;
         int year = persianCalendar.getDateFields().getYear();
-        persianCalendar.setTime(clonedCal.getTime());
-        String persianDate = getDate(year, month, day);
 
-        int firstDayOfWeek = persianCalendar.getFirstDayOfWeek();
+        List<String> days = new LinkedList<>();
+        for (int i = 1; i <= actualMaximumDaysInMonth; i++) {
+            days.add(getDate(year, month, i));
+        }
         return days;
+    }
+
+
+    public static List<String> thisWeek() {
+        return getWeek(0);
     }
 
     public static String getCurrentDateTime() {
@@ -86,6 +88,7 @@ public class DateUtil {
         String persianTime = getTime(hour, minute, second, millSecond);
         return persianDate + "-" + persianTime;
     }
+
     public static String getCurrentTime() {
         SimplePersianCalendar persianCalendar = new SimplePersianCalendar();
         Calendar cal = Calendar.getInstance();
@@ -139,6 +142,11 @@ public class DateUtil {
         return daysOfWeek[dayOfWeek] + "  " + Integer.valueOf(splittedDate[2]) + "  " + persianMoths[Integer.valueOf(splittedDate[1])];
     }
 
+    public static String getFormattedDateWithoutName(String date) {
+        String[] splittedDate = date.split("/");
+        return Integer.valueOf(splittedDate[2]) + "  " + persianMoths[Integer.valueOf(splittedDate[1])];
+    }
+
     public static String getPersianMonth(String date) {
         String[] splittedDate = date.split("/");
         return persianMoths[Integer.valueOf(splittedDate[1])];
@@ -156,6 +164,13 @@ public class DateUtil {
         }
         return firstDay + " " + persianMoths[firstDayMounth] + " تا " + lastDay + " " + persianMoths[lastDayMounth];
 
+    }
+
+    public static String getPersianDaysOfWeek(int dayNum) throws Exception {
+        if (dayNum <= 7) {
+            return daysOfWeek[dayNum];
+        }
+        throw new Exception("invalid Number Of day");  // TODO: 7/15/2022 change exception type
     }
 //1400/12/14-11:24.56.005
 }

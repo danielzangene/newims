@@ -7,9 +7,7 @@ import ir.newims.ims.business.personnel.footwork.dto.request.DeleteFootWorkLogRe
 import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkDaySheetRequest;
 import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkLogRequest;
 import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkWeekSheetRequest;
-import ir.newims.ims.business.personnel.footwork.dto.response.DayFootWorksResponse;
-import ir.newims.ims.business.personnel.footwork.dto.response.DayFootWorksTotalLogResponse;
-import ir.newims.ims.business.personnel.footwork.dto.response.WeekFootWorksResponse;
+import ir.newims.ims.business.personnel.footwork.dto.response.*;
 import ir.newims.ims.exception.DataResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +71,30 @@ public class FootWorkController {
         return ResponseEntity.ok(new DataResponse(ResponseConstant.SC_OK,
                 ResponseConstantMessage.SC_OK,
                 dayFootWorksResponse));
+    }
+
+    @PatchMapping("/log/month/alldays")
+    public ResponseEntity<?> monthSummary() {
+        MonthFootWorkAllDaysResponse monthAllDaysLog = footWorkService.currentMonthAllDaysLog();
+        return ResponseEntity.ok(new DataResponse(ResponseConstant.SC_OK,
+                ResponseConstantMessage.SC_OK,
+                monthAllDaysLog));
+    }
+
+    @PatchMapping("/log/month/summary")
+    public ResponseEntity<?> monthAllDay() {
+        MonthFootWorkSummaryResponse monthSummary = footWorkService.currentMonthSummary();
+        return ResponseEntity.ok(new DataResponse(ResponseConstant.SC_OK,
+                ResponseConstantMessage.SC_OK,
+                monthSummary));
+    }
+
+    @PatchMapping("/log/week/summary")
+    public ResponseEntity<?> currentWeekSummary() throws Exception {
+        WeekFootWorksSummaryResponse weekSummary = footWorkService.currentWeekSummary();
+        return ResponseEntity.ok(new DataResponse(ResponseConstant.SC_OK,
+                ResponseConstantMessage.SC_OK,
+                weekSummary));
     }
 
 }

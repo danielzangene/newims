@@ -3,9 +3,7 @@ package ir.newims.ims.business.personnel.footwork;
 import ir.newims.ims.business.personnel.footwork.dto.request.DeleteFootWorkLogRequest;
 import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkDaySheetRequest;
 import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkLogRequest;
-import ir.newims.ims.business.personnel.footwork.dto.response.DayFootWorksResponse;
-import ir.newims.ims.business.personnel.footwork.dto.response.DayFootWorksTotalLogResponse;
-import ir.newims.ims.business.personnel.footwork.dto.response.WeekFootWorksResponse;
+import ir.newims.ims.business.personnel.footwork.dto.response.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,4 +22,10 @@ public interface FootWorkService {
     DayFootWorksResponse getAllLogsByDate(FootWorkDaySheetRequest request);
 
     DayFootWorksResponse delete(DeleteFootWorkLogRequest request);
+
+    MonthFootWorkSummaryResponse currentMonthSummary();
+
+    MonthFootWorkAllDaysResponse currentMonthAllDaysLog();
+
+    WeekFootWorksSummaryResponse currentWeekSummary() throws Exception;
 }
