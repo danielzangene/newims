@@ -43,7 +43,7 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
+        String jwt = jwtUtils.generateJwtToken();
         return ResponseEntity.ok(DataResponse.SUCCESS_RESPONSE.setResultData(new LoginResponse(jwt)));
     }
 
@@ -57,7 +57,6 @@ public class AuthController {
             throw new BusinessException(ResponseConstant.EMAIL_EXIST, ResponseConstantMessage.EMAIL_EXIST);
         }
 
-        // Create new user's account
         User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(), encoder.encode(signUpRequest.getPassword()));
         userRepository.save(user);
 

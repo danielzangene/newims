@@ -3,8 +3,10 @@ package ir.newims.ims.filter.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ir.newims.ims.ResponseConstant;
 import ir.newims.ims.ResponseConstantMessage;
+import ir.newims.ims.exception.DataResponse;
 import ir.newims.ims.exception.Response;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,23 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
     Response responseObject = new Response(ResponseConstant.SC_UNAUTHORIZED, ResponseConstantMessage.SC_UNAUTHORIZED);
-    new ObjectMapper().writeValue(response.getOutputStream(), responseObject);
+    new ObjectMapper().writeValue(response.getOutputStream(), ResponseEntity.ok(new DataResponse(ResponseConstant.SC_OK,
+            ResponseConstantMessage.SC_OK,
+            responseObject)));
   }
+  // TODO: 7/15/2022 fix this
+//
+//  {
+//    "headers": {},
+//    "body": {
+//    "code": 200,
+//            "message": "عملیات با موفقیت انجام شد.",
+//            "resultData": {
+//      "code": 401,
+//              "message": "مدت زمان اعتبار توکن شما به پایان رسیده، لطفا مجدد وارد شوید."
+//    }
+//  },
+//    "statusCode": "OK",
+//          "statusCodeValue": 200
+//  }
 }

@@ -1,9 +1,12 @@
 package ir.newims.ims.filter.utils;
 
 import io.jsonwebtoken.*;
+import ir.newims.ims.business.personnel.personnel.UserService;
 import ir.newims.ims.filter.services.UserDetailsImpl;
+import ir.newims.ims.models.personnel.personnel.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -14,20 +17,23 @@ import java.util.Date;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-  @Value("${ims.app.jwtSecret}")
-  private String jwtSecret;
+    @Value("${ims.app.jwtSecret}")
+    private String jwtSecret;
 
-  @Value("${ims.app.jwtExpirationMs}")
-  private int jwtExpirationMs;
+    @Value("${ims.app.jwtExpirationMs}")
+    private int jwtExpirationMs;
 
-  public String generateJwtToken(Authentication authentication) {
+    @Autowired
+    UserService userService;
 
-    UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-
+    public String generateJwtToken() {
+        User currentUser = userService.getCurrentUser();
         return Jwts.builder()
-                .claim("email", userPrincipal.getEmail())
-                .claim("username", userPrincipal.getUsername())
-                .setSubject(userPrincipal.getUsername())
+                .claim("name", currentUser.getName())
+                .claim("role", currentUser.getRole())
+                .claim("email", currentUser.getEmail())
+                .claim("username", currentUser.getUsername())
+                .setSubject(currentUser.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
