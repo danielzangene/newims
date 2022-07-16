@@ -2,6 +2,7 @@ package ir.newims.ims.business.tmp;
 
 import ir.newims.ims.ResponseConstant;
 import ir.newims.ims.ResponseConstantMessage;
+import ir.newims.ims.application.utils.DateUtil;
 import ir.newims.ims.exception.DataResponse;
 import ir.newims.ims.filter.dto.response.LoginResponse;
 import ir.newims.ims.filter.utils.JwtUtils;
@@ -20,8 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/testdata")
+@RequestMapping("/test")
 public class CController {
     @Autowired
     AuthenticationManager authenticationManager;
@@ -45,16 +47,16 @@ public class CController {
         Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
+        String jwt = jwtUtils.generateJwtToken();
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         return ResponseEntity.ok(new DataResponse(ResponseConstant.SC_OK, ResponseConstantMessage.SC_OK,
                 new LoginResponse(jwt)));
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    @GetMapping("/signup")
+    public ResponseEntity<?> registerUser() {
 
-        return ResponseEntity.ok("User registered successfully!");
+        return ResponseEntity.ok(DateUtil.getWeek(0));
     }
 }
