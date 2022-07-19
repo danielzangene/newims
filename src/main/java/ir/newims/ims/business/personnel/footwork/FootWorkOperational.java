@@ -166,16 +166,20 @@ public class FootWorkOperational implements FootWorkService {
 
     @Override
     public MonthFootWorkAllDaysResponse currentMonthAllDaysLog() {
-        List<String> daysFootWork = getMonthAllWorkTime(DateUtil.getCurrentDate());
+        List<String> monthDaysFootWork = getMonthAllWorkTime(DateUtil.getCurrentDate());
+        List<String> previousMonthDaysFootWork = monthDaysFootWork.stream().sorted(Collections.reverseOrder()).collect(Collectors.toList());
+        previousMonthDaysFootWork.remove(previousMonthDaysFootWork.size() - 1);
+        if (monthDaysFootWork.size() > previousMonthDaysFootWork.size()) previousMonthDaysFootWork.add("0000");
+        if (monthDaysFootWork.size() < previousMonthDaysFootWork.size()) monthDaysFootWork.add("0000");
         return new MonthFootWorkAllDaysResponse(
                 Arrays.asList(
                         new MonthFootWorkAllDaysElementResponse(
                                 "ماه جاری",
-                                daysFootWork
+                                monthDaysFootWork
                         ),
                         new MonthFootWorkAllDaysElementResponse(
                                 "ماه قبل",
-                                daysFootWork.stream().sorted(Collections.reverseOrder()).collect(Collectors.toList())
+                                previousMonthDaysFootWork
                         )
                 )
         );
