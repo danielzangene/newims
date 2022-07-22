@@ -53,4 +53,6 @@ public interface ResponseConstantMessage {
 
     String INVALID_FOOT_WORK_LOG_DATA = "ساعت ورود/خروج را به درستی وارد نشده.";
     String INVALID_FOOT_WORK_LOG_ID  = "ایدی لاگ مورد نظر به درستی وارد نشده.";
+
+    String INVALID_LEAVE_REQUEST_LOG_ID  = "ایدی لاگ مورد نظر به درستی وارد نشده.";
 }

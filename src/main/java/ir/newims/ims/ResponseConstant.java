@@ -57,4 +57,9 @@ public interface ResponseConstant {
     Integer INVALID_FOOT_WORK_LOG_DATA = 1005001;
     Integer INVALID_FOOT_WORK_LOG_ID = 1005002;
 
+    // ** leaveRequestCodes  1000000 -> 1005000
+
+    Integer INVALID_LEAVE_REQUEST_LOG_DATA = 1006001;
+    Integer INVALID_LEAVE_REQUEST_LOG_ID = 1006002;
+
 }
