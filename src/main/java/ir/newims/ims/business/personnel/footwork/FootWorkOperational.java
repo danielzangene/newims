@@ -158,9 +158,9 @@ public class FootWorkOperational implements FootWorkService {
         return new MonthFootWorkSummaryResponse(
                 DateUtil.getPersianMonth(DateUtil.getCurrentDate()),
                 monthTotalWorkTime,
-                "0000",
-                "0000",
-                "0000"
+                "0100",
+                "0200",
+                "0300"
         );
     }
 
