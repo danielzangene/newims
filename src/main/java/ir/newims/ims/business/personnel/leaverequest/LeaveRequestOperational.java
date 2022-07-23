@@ -62,7 +62,7 @@ public class LeaveRequestOperational implements LeaveRequestService {
     @Override
     public LeaveRequestListResponse getAllLogs(LeaveRequestListRequest request) {
         User currentUser = userService.getCurrentUser();
-        Page<LeaveRequestLog> logPage = leaveRequestRepo.findAllByUserOrderByCreationDateTime(
+        Page<LeaveRequestLog> logPage = leaveRequestRepo.findAllByUserOrderByCreationDateTimeDesc(
                 currentUser,
                 PageRequest.of(
                         request.getPageNum() - 1,

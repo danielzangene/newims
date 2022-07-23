@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LeaveRequestRepo extends JpaRepository<LeaveRequestLog, Long> {
 
-    Page<LeaveRequestLog> findAllByUserOrderByCreationDateTime(@Param("user") User user ,Pageable pageable);
+    Page<LeaveRequestLog> findAllByUserOrderByCreationDateTimeDesc(@Param("user") User user ,Pageable pageable);
 
     Long countAllByUser(User user);
 
