@@ -1,9 +1,6 @@
 package ir.newims.ims.business.personnel.leaverequest.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import ir.newims.ims.business.personnel.leaverequest.dto.response.ElementResponse;
-
-import javax.validation.constraints.NotBlank;
 
 public class LeaveRequestResponse {
 
@@ -25,7 +22,7 @@ public class LeaveRequestResponse {
     private ElementResponse status;
 
     @JsonProperty
-    private ElementResponse type;
+    private ElementResponse leaveType;
 
     @JsonProperty
     private Boolean canDelete;
@@ -37,7 +34,7 @@ public class LeaveRequestResponse {
                                 String toTime,
                                 String reason,
                                 ElementResponse status,
-                                ElementResponse type,
+                                ElementResponse leaveType,
                                 Boolean canDelete) {
         this.id = id;
         this.to = to;
@@ -46,7 +43,7 @@ public class LeaveRequestResponse {
         this.toTime = toTime;
         this.reason = reason;
         this.status = status;
-        this.type = type;
+        this.leaveType = leaveType;
         this.canDelete = canDelete;
     }
 }

@@ -1,6 +1,7 @@
 package ir.newims.ims.business.personnel.footwork.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ir.newims.ims.business.personnel.leaverequest.dto.response.ElementResponse;
 
 public class FootWorksResponse {
 
@@ -12,6 +13,8 @@ public class FootWorksResponse {
     private String date;
     @JsonProperty
     private String desc;
+    @JsonProperty
+    private ElementResponse status;
 
     public Long getId() {
         return id;
@@ -43,5 +46,13 @@ public class FootWorksResponse {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public ElementResponse getStatus() {
+        return status;
+    }
+
+    public void setStatus(ElementResponse status) {
+        this.status = status;
     }
 }

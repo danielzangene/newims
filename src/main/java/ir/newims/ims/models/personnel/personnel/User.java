@@ -37,6 +37,8 @@ public class User extends BaseEntity {
     @Size(max = 1000)
     private String role;
 
+    private User supervisor;
+
     private List<GroupSystemAccess> groupAccess;
 
     public User() {
@@ -50,12 +52,22 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "c_supervisor")
+    public User getSupervisor() {
+        return supervisor;
+    }
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "mm_userGroupAccess",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id"))
     public List<GroupSystemAccess> getGroupAccess() {
         return groupAccess;
+    }
+
+    public void setSupervisor(User supervisor) {
+        this.supervisor = supervisor;
     }
 
     public void setGroupAccess(List<GroupSystemAccess> groupAccess) {

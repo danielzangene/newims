@@ -1,28 +1,19 @@
 package ir.newims.ims.models.personnel.footwork;
 
-import ir.newims.ims.models.BaseEntity;
-import ir.newims.ims.models.personnel.personnel.User;
+import ir.newims.ims.models.personnel.RequestLog;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "t_FootWorkLog")
-public class FootWorkLog extends BaseEntity {
+public class FootWorkLog extends RequestLog {
 
-    private User user;
     private String time;
     private String date;
     private String desc;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "c_user")
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     @Column(name = "c_time")
     public String getTime() {
@@ -49,5 +40,10 @@ public class FootWorkLog extends BaseEntity {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    @Override
+    public String description() {
+        return time + " در " + date + "--" + desc;
     }
 }

@@ -1,12 +1,14 @@
 package ir.newims.ims.business.personnel.leaverequest;
 
-import ir.newims.ims.models.personnel.footwork.LeaveRequestLog;
+import ir.newims.ims.models.personnel.leaverequest.LeaveRequestLog;
 import ir.newims.ims.models.personnel.personnel.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public interface LeaveRequestRepo extends JpaRepository<LeaveRequestLog, Long> {
@@ -15,4 +17,5 @@ public interface LeaveRequestRepo extends JpaRepository<LeaveRequestLog, Long> {
 
     Long countAllByUser(User user);
 
+    Optional<LeaveRequestLog> findByIdAndUser(Long aLong, User user);
 }

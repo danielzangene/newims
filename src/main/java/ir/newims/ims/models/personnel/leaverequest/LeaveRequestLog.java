@@ -1,30 +1,20 @@
-package ir.newims.ims.models.personnel.footwork;
+package ir.newims.ims.models.personnel.leaverequest;
 
-import ir.newims.ims.models.BaseEntity;
 import ir.newims.ims.models.management.Element;
-import ir.newims.ims.models.personnel.personnel.User;
+import ir.newims.ims.models.personnel.RequestLog;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "t_LeaveRequestLog")
-public class LeaveRequestLog extends BaseEntity {
+public class LeaveRequestLog extends RequestLog {
 
     private String to;
     private String from;
     private String fromTime;
     private String toTime;
     private String reason;
-    private Element status;
-    private Element type;
-
-    private User user;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "c_user")
-    public User getUser() {
-        return user;
-    }
+    private Element leaveType;
 
     @Column(name = "c_to")
     public String getTo() {
@@ -52,15 +42,13 @@ public class LeaveRequestLog extends BaseEntity {
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "c_status")
-    public Element getStatus() {
-        return status;
+    @JoinColumn(name = "c_leaveType")
+    public Element getLeaveType() {
+        return leaveType;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "c_type")
-    public Element getType() {
-        return type;
+    public void setLeaveType(Element leaveType) {
+        this.leaveType = leaveType;
     }
 
     public void setTo(String to) {
@@ -83,15 +71,9 @@ public class LeaveRequestLog extends BaseEntity {
         this.reason = reason;
     }
 
-    public void setStatus(Element status) {
-        this.status = status;
+    @Override
+    public String description() {
+        return "از" + from + " تا " + to + "--" + reason;
     }
 
-    public void setType(Element type) {
-        this.type = type;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }

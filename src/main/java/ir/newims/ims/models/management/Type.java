@@ -16,7 +16,7 @@ public class Type extends SimpleEntity {
         return code;
     }
     @OneToMany(mappedBy = "type")
-    @OrderColumn(name = "i_index", insertable=false, updatable=false, nullable=false)
+    @OrderColumn(name = "i_index")
     public List<Element> getElements() {
         return elements;
     }

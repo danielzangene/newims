@@ -6,6 +6,7 @@ import ir.newims.ims.business.management.element.ElementRepo;
 import ir.newims.ims.business.management.element.TypeRepo;
 import ir.newims.ims.business.management.element.dto.ElementDto;
 import ir.newims.ims.business.management.element.dto.TypeDto;
+import ir.newims.ims.business.personnel.PersonnelCode;
 import ir.newims.ims.business.personnel.leaverequest.LeaveRequestCode;
 import ir.newims.ims.exception.BusinessException;
 import ir.newims.ims.filter.filter.AccessFilter;
@@ -46,17 +47,23 @@ public class Initializer {
 
 
     private void addTypes() {
-        types.add(new TypeDto(LeaveRequestCode.REQUEST_TYPE));
-        types.add(new TypeDto(LeaveRequestCode.REQUEST_STATUS));
+        types.add(new TypeDto(LeaveRequestCode.LEAVE_REQUEST_TYPE));
+        types.add(new TypeDto(PersonnelCode.REQUEST_STATUS));
+        types.add(new TypeDto(PersonnelCode.REQUEST_LOG_TYPE));
     }
 
     private void addElement() {
-        elements.add(new ElementDto("استحقاقی", LeaveRequestCode.ENTITLEMENT_REQUEST_TYPE, LeaveRequestCode.REQUEST_TYPE));
-        elements.add(new ElementDto("جهت اطلاع", LeaveRequestCode.FOR_INFORMATION_REQUEST_TYPE, LeaveRequestCode.REQUEST_TYPE));
-        elements.add(new ElementDto("استعلاجی", LeaveRequestCode.ILLNESS_REQUEST_TYPE, LeaveRequestCode.REQUEST_TYPE));
-        elements.add(new ElementDto("ثبت شده", LeaveRequestCode.REGISTERED_REQUEST_STATUS, LeaveRequestCode.REQUEST_STATUS));
-        elements.add(new ElementDto("تایید شده", LeaveRequestCode.CONFIRMED_REQUEST_STATUS, LeaveRequestCode.REQUEST_STATUS));
-        elements.add(new ElementDto("رد شده", LeaveRequestCode.REJECTED_REQUEST_STATUS, LeaveRequestCode.REQUEST_STATUS));
+        elements.add(new ElementDto("استحقاقی", LeaveRequestCode.ENTITLEMENT_REQUEST_TYPE, LeaveRequestCode.LEAVE_REQUEST_TYPE));
+        elements.add(new ElementDto("جهت اطلاع", LeaveRequestCode.FOR_INFORMATION_REQUEST_TYPE, LeaveRequestCode.LEAVE_REQUEST_TYPE));
+        elements.add(new ElementDto("استعلاجی", LeaveRequestCode.ILLNESS_REQUEST_TYPE, LeaveRequestCode.LEAVE_REQUEST_TYPE));
+
+        elements.add(new ElementDto("ثبت شده", PersonnelCode.REGISTERED_REQUEST_STATUS, PersonnelCode.REQUEST_STATUS));
+        elements.add(new ElementDto("تایید شده", PersonnelCode.CONFIRMED_REQUEST_STATUS, PersonnelCode.REQUEST_STATUS));
+        elements.add(new ElementDto("رد شده", PersonnelCode.REJECTED_REQUEST_STATUS, PersonnelCode.REQUEST_STATUS));
+
+        elements.add(new ElementDto("مرخصی", PersonnelCode.LEAVE_REQUEST_LOG_TYPE, PersonnelCode.REQUEST_LOG_TYPE));
+        elements.add(new ElementDto("ورود/خروج", PersonnelCode.FOOT_WORK_LOG_TYPE, PersonnelCode.REQUEST_LOG_TYPE));
+
     }
 
     private void persistType() {
@@ -70,7 +77,7 @@ public class Initializer {
                     logger.info("TYPE PERSISTS: " + type.getCode());
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage());
+                logger.error("TYPE NOT PERSISTS: " + tp.getCode());
             }
         }
 
@@ -94,7 +101,7 @@ public class Initializer {
                     logger.info("ELEMENT PERSISTS: " + element.getCode());
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage());
+                logger.error("ELEMENT NOT PERSISTS: " + elm.getCode());
             }
         }
     }

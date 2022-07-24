@@ -3,6 +3,7 @@ package ir.newims.ims.business.personnel.leaverequest;
 import ir.newims.ims.ResponseConstant;
 import ir.newims.ims.ResponseConstantMessage;
 import ir.newims.ims.business.management.element.ElementRepo;
+import ir.newims.ims.business.personnel.PersonnelCode;
 import ir.newims.ims.business.personnel.leaverequest.dto.request.DeleteLeaveRequestLogRequest;
 import ir.newims.ims.business.personnel.leaverequest.dto.request.LeaveRequestListRequest;
 import ir.newims.ims.business.personnel.leaverequest.dto.request.LeaveRequestLogRequest;
@@ -13,7 +14,7 @@ import ir.newims.ims.business.personnel.personnel.UserService;
 import ir.newims.ims.exception.BusinessException;
 import ir.newims.ims.exception.Response;
 import ir.newims.ims.models.management.Element;
-import ir.newims.ims.models.personnel.footwork.LeaveRequestLog;
+import ir.newims.ims.models.personnel.leaverequest.LeaveRequestLog;
 import ir.newims.ims.models.personnel.personnel.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,17 +45,23 @@ public class LeaveRequestOperational implements LeaveRequestService {
         BeanUtils.copyProperties(request, leaveRequestLog);
         User currentUser = userService.getCurrentUser();
         leaveRequestLog.setUser(currentUser);
-        leaveRequestLog.setType(elementRepo.findAll().get(request.getType()));
-        leaveRequestLog.setStatus(elementRepo.findByCode(LeaveRequestCode.REGISTERED_REQUEST_STATUS).get());
+        leaveRequestLog.setLeaveType(elementRepo.findAll().get(request.getType()));
+        leaveRequestLog.setType(elementRepo.findByCode(PersonnelCode.LEAVE_REQUEST_LOG_TYPE).get());
+        leaveRequestLog.setStatus(elementRepo.findByCode(PersonnelCode.REGISTERED_REQUEST_STATUS).get());
         leaveRequestRepo.save(leaveRequestLog);
         return Response.SUCCESS_RESPONSE;
 
     }
 
     public Response deleteRequest(DeleteLeaveRequestLogRequest request) {
-        LeaveRequestLog leaveRequestLog = leaveRequestRepo.findById(request.getId()).orElseThrow(() -> {
-            throw new BusinessException(ResponseConstant.INVALID_LEAVE_REQUEST_LOG_ID, ResponseConstantMessage.INVALID_LEAVE_REQUEST_LOG_ID);
-        });
+        LeaveRequestLog leaveRequestLog = leaveRequestRepo.findByIdAndUser(
+                request.getId(),
+                userService.getCurrentUser()
+        ).orElseThrow(() -> {
+                    throw new BusinessException(ResponseConstant.INVALID_LEAVE_REQUEST_LOG_ID,
+                            ResponseConstantMessage.INVALID_LEAVE_REQUEST_LOG_ID);
+                }
+        );
         leaveRequestRepo.delete(leaveRequestLog);
         return Response.SUCCESS_RESPONSE;
     }
@@ -62,6 +69,9 @@ public class LeaveRequestOperational implements LeaveRequestService {
     @Override
     public LeaveRequestListResponse getAllLogs(LeaveRequestListRequest request) {
         User currentUser = userService.getCurrentUser();
+        Long count = leaveRequestRepo.countAllByUser(currentUser);
+        if (request.getPageNum() * request.getPerPage() > count)
+            request.setPageNum((int) Math.ceil(count / request.getPerPage()) + 1);
         Page<LeaveRequestLog> logPage = leaveRequestRepo.findAllByUserOrderByCreationDateTimeDesc(
                 currentUser,
                 PageRequest.of(
@@ -89,7 +99,7 @@ public class LeaveRequestOperational implements LeaveRequestService {
                             log.getToTime(),
                             log.getReason(),
                             getLeaveRequestResponse(log.getStatus()),
-                            getLeaveRequestResponse(log.getType()),
+                            getLeaveRequestResponse(log.getLeaveType()),
                             check.canDelete(log)
                     )
             );
