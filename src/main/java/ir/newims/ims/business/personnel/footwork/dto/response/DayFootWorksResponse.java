@@ -1,6 +1,7 @@
 package ir.newims.ims.business.personnel.footwork.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ir.newims.ims.business.personnel.leaverequest.dto.response.ElementResponse;
 import ir.newims.ims.models.personnel.footwork.FootWorkLog;
 import org.springframework.beans.BeanUtils;
 
@@ -26,6 +27,12 @@ public class DayFootWorksResponse {
         this.footWorks = Objects.nonNull(footWorks) ? footWorks.stream().map(footWorkLog -> {
             FootWorksResponse footWorksResponse = new FootWorksResponse();
             BeanUtils.copyProperties(footWorkLog, footWorksResponse);
+            footWorksResponse.setStatus(
+                    new ElementResponse(
+                            footWorkLog.getStatus().getName(),
+                            footWorkLog.getStatus().getCode()
+                    )
+            );
             return footWorksResponse;
         }).collect(Collectors.toList()) : null;
     }
