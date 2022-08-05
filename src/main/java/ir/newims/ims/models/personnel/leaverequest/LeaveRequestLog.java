@@ -2,6 +2,7 @@ package ir.newims.ims.models.personnel.leaverequest;
 
 import ir.newims.ims.models.management.Element;
 import ir.newims.ims.models.personnel.RequestLog;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 
@@ -73,7 +74,16 @@ public class LeaveRequestLog extends RequestLog {
 
     @Override
     public String description() {
-        return "از" + from + " تا " + to + "--" + reason;
+        StringBuilder builder = new StringBuilder();
+        builder.append(" از ");
+        if (StringUtils.hasText(fromTime))
+            builder.append(fromTime.substring(0, 2) + ":" + fromTime.substring(2, 4) + " ");
+        builder.append(from + " تا ");
+        if (StringUtils.hasText(toTime)) builder.append(toTime.substring(0, 2) + ":" + toTime.substring(2, 4) + " ");
+        builder.append(to);
+        if (StringUtils.hasText(reason))
+            builder.append(" " + reason);
+        return builder.toString();
     }
 
 }

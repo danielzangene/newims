@@ -6,8 +6,8 @@ import ir.newims.ims.business.management.element.ElementRepo;
 import ir.newims.ims.business.management.element.TypeRepo;
 import ir.newims.ims.business.management.element.dto.ElementDto;
 import ir.newims.ims.business.management.element.dto.TypeDto;
-import ir.newims.ims.business.personnel.PersonnelCode;
 import ir.newims.ims.business.personnel.leaverequest.LeaveRequestCode;
+import ir.newims.ims.business.personnel.request.RequestCode;
 import ir.newims.ims.exception.BusinessException;
 import ir.newims.ims.filter.filter.AccessFilter;
 import ir.newims.ims.models.management.Element;
@@ -48,8 +48,8 @@ public class Initializer {
 
     private void addTypes() {
         types.add(new TypeDto(LeaveRequestCode.LEAVE_REQUEST_TYPE));
-        types.add(new TypeDto(PersonnelCode.REQUEST_STATUS));
-        types.add(new TypeDto(PersonnelCode.REQUEST_LOG_TYPE));
+        types.add(new TypeDto(RequestCode.REQUEST_STATUS));
+        types.add(new TypeDto(RequestCode.REQUEST_LOG_TYPE));
     }
 
     private void addElement() {
@@ -57,12 +57,12 @@ public class Initializer {
         elements.add(new ElementDto("جهت اطلاع", LeaveRequestCode.FOR_INFORMATION_REQUEST_TYPE, LeaveRequestCode.LEAVE_REQUEST_TYPE));
         elements.add(new ElementDto("استعلاجی", LeaveRequestCode.ILLNESS_REQUEST_TYPE, LeaveRequestCode.LEAVE_REQUEST_TYPE));
 
-        elements.add(new ElementDto("ثبت شده", PersonnelCode.REGISTERED_REQUEST_STATUS, PersonnelCode.REQUEST_STATUS));
-        elements.add(new ElementDto("تایید شده", PersonnelCode.CONFIRMED_REQUEST_STATUS, PersonnelCode.REQUEST_STATUS));
-        elements.add(new ElementDto("رد شده", PersonnelCode.REJECTED_REQUEST_STATUS, PersonnelCode.REQUEST_STATUS));
+        elements.add(new ElementDto("ثبت شده", RequestCode.REGISTERED_REQUEST_STATUS, RequestCode.REQUEST_STATUS));
+        elements.add(new ElementDto("تایید شده", RequestCode.CONFIRMED_REQUEST_STATUS, RequestCode.REQUEST_STATUS));
+        elements.add(new ElementDto("رد شده", RequestCode.REJECTED_REQUEST_STATUS, RequestCode.REQUEST_STATUS));
 
-        elements.add(new ElementDto("مرخصی", PersonnelCode.LEAVE_REQUEST_LOG_TYPE, PersonnelCode.REQUEST_LOG_TYPE));
-        elements.add(new ElementDto("ورود/خروج", PersonnelCode.FOOT_WORK_LOG_TYPE, PersonnelCode.REQUEST_LOG_TYPE));
+        elements.add(new ElementDto("مرخصی", RequestCode.LEAVE_REQUEST_LOG_TYPE, RequestCode.REQUEST_LOG_TYPE));
+        elements.add(new ElementDto("ورود/خروج", RequestCode.FOOT_WORK_LOG_TYPE, RequestCode.REQUEST_LOG_TYPE));
 
     }
 

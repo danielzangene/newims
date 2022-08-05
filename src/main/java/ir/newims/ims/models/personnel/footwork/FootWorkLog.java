@@ -1,6 +1,7 @@
 package ir.newims.ims.models.personnel.footwork;
 
 import ir.newims.ims.models.personnel.RequestLog;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,6 +45,16 @@ public class FootWorkLog extends RequestLog {
 
     @Override
     public String description() {
-        return time + " در " + date + "--" + desc;
+        StringBuilder builder = new StringBuilder();
+        builder.append(time.substring(0, 2));
+        builder.append(":");
+        builder.append(time.substring(2, 4));
+        builder.append(" ");
+        builder.append(date);
+        if (StringUtils.hasText(desc)) {
+            builder.append(" ");
+            builder.append(desc);
+        }
+        return builder.toString();
     }
 }

@@ -11,6 +11,7 @@ import ir.newims.ims.business.personnel.leaverequest.dto.response.ElementRespons
 import ir.newims.ims.business.personnel.leaverequest.dto.response.LeaveRequestListResponse;
 import ir.newims.ims.business.personnel.leaverequest.dto.response.LeaveRequestResponse;
 import ir.newims.ims.business.personnel.personnel.UserService;
+import ir.newims.ims.business.personnel.request.RequestCode;
 import ir.newims.ims.exception.BusinessException;
 import ir.newims.ims.exception.Response;
 import ir.newims.ims.models.management.Element;
@@ -46,8 +47,8 @@ public class LeaveRequestOperational implements LeaveRequestService {
         User currentUser = userService.getCurrentUser();
         leaveRequestLog.setUser(currentUser);
         leaveRequestLog.setLeaveType(elementRepo.findAll().get(request.getType()));
-        leaveRequestLog.setType(elementRepo.findByCode(PersonnelCode.LEAVE_REQUEST_LOG_TYPE).get());
-        leaveRequestLog.setStatus(elementRepo.findByCode(PersonnelCode.REGISTERED_REQUEST_STATUS).get());
+        leaveRequestLog.setType(elementRepo.findByCode(RequestCode.LEAVE_REQUEST_LOG_TYPE).get());
+        leaveRequestLog.setStatus(elementRepo.findByCode(RequestCode.REGISTERED_REQUEST_STATUS).get());
         leaveRequestRepo.save(leaveRequestLog);
         return Response.SUCCESS_RESPONSE;
 

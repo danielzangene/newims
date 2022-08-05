@@ -11,6 +11,7 @@ import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkLogRequest;
 import ir.newims.ims.business.personnel.footwork.dto.response.*;
 import ir.newims.ims.business.personnel.leaverequest.LeaveRequestCode;
 import ir.newims.ims.business.personnel.personnel.UserService;
+import ir.newims.ims.business.personnel.request.RequestCode;
 import ir.newims.ims.exception.BusinessException;
 import ir.newims.ims.models.personnel.footwork.FootWorkLog;
 import ir.newims.ims.models.personnel.personnel.User;
@@ -51,8 +52,8 @@ public class FootWorkOperational implements FootWorkService {
         BeanUtils.copyProperties(request, footWorkLog);
         User currentUser = userService.getCurrentUser();
         footWorkLog.setUser(currentUser);
-        footWorkLog.setType(elementRepo.findByCode(PersonnelCode.FOOT_WORK_LOG_TYPE).get());
-        footWorkLog.setStatus(elementRepo.findByCode(PersonnelCode.REGISTERED_REQUEST_STATUS).get());
+        footWorkLog.setType(elementRepo.findByCode(RequestCode.FOOT_WORK_LOG_TYPE).get());
+        footWorkLog.setStatus(elementRepo.findByCode(RequestCode.REGISTERED_REQUEST_STATUS).get());
         footWorkRepo.save(footWorkLog);
         List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDateAndUserOrderByTime(request.getDate(), currentUser);
         return new DayFootWorksResponse(request.getDate(), getTotalDay(footWorkLogs), null, footWorkLogs);
