@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,6 +17,8 @@ public interface RequestRepo extends JpaRepository<RequestLog, Long> {
     Page<RequestLog> findAllByUser_SupervisorOrderByCreationDateTimeDesc(@Param("user") User user, Pageable pageable);
 
     Long countAllByUser_Supervisor(User user);
+
+    List<RequestLog> findAllByUser_SupervisorAndStatus_Code(User user, String statusCode);
 
     Optional<RequestLog> findByIdAndUser_Supervisor(Long aLong, User user);
 }

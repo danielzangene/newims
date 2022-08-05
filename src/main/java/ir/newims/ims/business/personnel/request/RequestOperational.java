@@ -6,9 +6,7 @@ import ir.newims.ims.business.management.element.ElementRepo;
 import ir.newims.ims.business.personnel.personnel.UserService;
 import ir.newims.ims.business.personnel.request.dto.request.RequestActionRequest;
 import ir.newims.ims.business.personnel.request.dto.request.RequestListRequest;
-import ir.newims.ims.business.personnel.request.dto.response.ElementResponse;
-import ir.newims.ims.business.personnel.request.dto.response.RequestListResponse;
-import ir.newims.ims.business.personnel.request.dto.response.RequestResponse;
+import ir.newims.ims.business.personnel.request.dto.response.*;
 import ir.newims.ims.exception.BusinessException;
 import ir.newims.ims.exception.Response;
 import ir.newims.ims.models.management.Element;
@@ -36,6 +34,16 @@ public class RequestOperational implements RequestService {
 
 
     @Override
+    public RequestSummaryListResponse getAllLogsSummary() {
+        User currentUser = userService.getCurrentUser();
+        List<RequestLog> allLogs = requestRepo.findAllByUser_SupervisorAndStatus_Code(currentUser, RequestCode.REGISTERED_REQUEST_STATUS);
+        return new RequestSummaryListResponse(
+                Long.valueOf(allLogs.size()),
+                getRequestSummaryResponse(allLogs)
+        );
+    }
+
+    @Override
     public RequestListResponse getAllLogs(RequestListRequest request) {
         User currentUser = userService.getCurrentUser();
         Long count = requestRepo.countAllByUser_Supervisor(currentUser);
@@ -52,11 +60,11 @@ public class RequestOperational implements RequestService {
                 logPage.getTotalElements(),
                 request.getPageNum(),
                 request.getPerPage(),
-                getLeaveRequestResponse(logPage.getContent())
+                getRequestResponse(logPage.getContent())
         );
     }
 
-    List<RequestResponse> getLeaveRequestResponse(List<RequestLog> logs) {
+    List<RequestResponse> getRequestResponse(List<RequestLog> logs) {
         List<RequestResponse> responseLogs = new LinkedList<>();
         for (RequestLog log : logs) {
             responseLogs.add(
@@ -68,6 +76,21 @@ public class RequestOperational implements RequestService {
                             log.description(),
                             log.getCreationDateTime(),
                             check.canDoOperation(log)
+                    )
+            );
+        }
+        return responseLogs;
+    }
+
+    List<RequestSummaryResponse> getRequestSummaryResponse(List<RequestLog> logs) {
+        List<RequestSummaryResponse> responseLogs = new LinkedList<>();
+        for (RequestLog log : logs) {
+            responseLogs.add(
+                    new RequestSummaryResponse(
+                            log.getId(),
+                            log.getUser().getName(),
+                            getElementResponse(log.getType()),
+                            log.description()
                     )
             );
         }
@@ -108,5 +131,6 @@ public class RequestOperational implements RequestService {
         );
         requestLog.setStatus(elementRepo.findByCode(RequestCode.REJECTED_REQUEST_STATUS).get());
         requestRepo.save(requestLog);
-        return Response.SUCCESS_RESPONSE;    }
+        return Response.SUCCESS_RESPONSE;
+    }
 }

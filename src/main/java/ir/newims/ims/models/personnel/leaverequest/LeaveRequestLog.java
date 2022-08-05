@@ -81,8 +81,10 @@ public class LeaveRequestLog extends RequestLog {
         builder.append(from + " تا ");
         if (StringUtils.hasText(toTime)) builder.append(toTime.substring(0, 2) + ":" + toTime.substring(2, 4) + " ");
         builder.append(to);
-        if (StringUtils.hasText(reason))
-            builder.append(" " + reason);
+        if (StringUtils.hasText(reason)) {
+            builder.append(" به علت: ");
+            builder.append(reason);
+        }
         return builder.toString();
     }
 
