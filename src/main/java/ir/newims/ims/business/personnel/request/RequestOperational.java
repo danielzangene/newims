@@ -36,7 +36,7 @@ public class RequestOperational implements RequestService {
     @Override
     public RequestSummaryListResponse getAllLogsSummary() {
         User currentUser = userService.getCurrentUser();
-        List<RequestLog> allLogs = requestRepo.findAllByUser_SupervisorAndStatus_Code(currentUser, RequestCode.REGISTERED_REQUEST_STATUS);
+        List<RequestLog> allLogs = requestRepo.findAllByUser_SupervisorAndStatus_CodeOrderByCreationDateTimeDesc(currentUser, RequestCode.REGISTERED_REQUEST_STATUS);
         return new RequestSummaryListResponse(
                 Long.valueOf(allLogs.size()),
                 getRequestSummaryResponse(allLogs)

@@ -18,7 +18,7 @@ public interface RequestRepo extends JpaRepository<RequestLog, Long> {
 
     Long countAllByUser_Supervisor(User user);
 
-    List<RequestLog> findAllByUser_SupervisorAndStatus_Code(User user, String statusCode);
+    List<RequestLog> findAllByUser_SupervisorAndStatus_CodeOrderByCreationDateTimeDesc(User user, String statusCode);
 
     Optional<RequestLog> findByIdAndUser_Supervisor(Long aLong, User user);
 }
