@@ -34,7 +34,7 @@ services:
         "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQL5InnoDBDialect",
         "spring.jpa.hibernate.ddl-auto" : "update",
         "ims.app.jwtSecret" : "$JWT_SECTER_KEY",
-        "ims.app.jwtExpirationMs" : "$JWT_SECTER_KEY"
+        "ims.app.jwtExpirationMs" : "$JWT_EXPIRATION_MS"
       }'
     volumes:
       - .m2:/root/.m2
