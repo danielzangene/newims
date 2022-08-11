@@ -32,7 +32,7 @@ services:
         "spring.datasource.username" : "root",
         "spring.datasource.password" : "$MYSQLDB_ROOT_PASSWORD",
         "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQL5InnoDBDialect",
-        "spring.jpa.hibernate.ddl-auto" : "create",
+        "spring.jpa.hibernate.ddl-auto" : "update",
         "ims.app.jwtSecret" : "$JWT_SECTER_KEY",
         "ims.app.jwtExpirationMs" : "$JWT_SECTER_KEY"
       }'
