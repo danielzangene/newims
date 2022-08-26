@@ -15,6 +15,7 @@ import ir.newims.ims.models.personnel.personnel.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
@@ -31,6 +32,9 @@ public class RequestOperational implements RequestService {
     ElementRepo elementRepo;
     @Autowired
     RequestCheck check;
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
 
 
     @Override
@@ -132,5 +136,18 @@ public class RequestOperational implements RequestService {
         requestLog.setStatus(elementRepo.findByCode(RequestCode.REJECTED_REQUEST_STATUS).get());
         requestRepo.save(requestLog);
         return Response.SUCCESS_RESPONSE;
+    }
+
+    @Override
+    public void pushNotifReq(RequestLog requestLog) {
+        String supervisorUsername = requestLog.getUser().getSupervisor().getUsername();
+        RequestSummaryResponse requestSummaryResponse = new RequestSummaryResponse(
+                requestLog.getId(),
+                requestLog.getUser().getName(),
+                getElementResponse(requestLog.getType()),
+                requestLog.description()
+        );
+        simpMessagingTemplate.convertAndSendToUser(supervisorUsername, "/notif", requestSummaryResponse);
+
     }
 }

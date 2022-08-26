@@ -12,6 +12,7 @@ import ir.newims.ims.business.personnel.leaverequest.dto.response.LeaveRequestLi
 import ir.newims.ims.business.personnel.leaverequest.dto.response.LeaveRequestResponse;
 import ir.newims.ims.business.personnel.personnel.UserService;
 import ir.newims.ims.business.personnel.request.RequestCode;
+import ir.newims.ims.business.personnel.request.RequestService;
 import ir.newims.ims.exception.BusinessException;
 import ir.newims.ims.exception.Response;
 import ir.newims.ims.models.management.Element;
@@ -34,6 +35,8 @@ public class LeaveRequestOperational implements LeaveRequestService {
     @Autowired
     UserService userService;
     @Autowired
+    RequestService requestService;
+    @Autowired
     LeaveRequestRepo leaveRequestRepo;
     @Autowired
     LeaveRequestCheck check;
@@ -50,6 +53,7 @@ public class LeaveRequestOperational implements LeaveRequestService {
         leaveRequestLog.setType(elementRepo.findByCode(RequestCode.LEAVE_REQUEST_LOG_TYPE).get());
         leaveRequestLog.setStatus(elementRepo.findByCode(RequestCode.REGISTERED_REQUEST_STATUS).get());
         leaveRequestRepo.save(leaveRequestLog);
+        requestService.pushNotifReq(leaveRequestLog);
         return Response.SUCCESS_RESPONSE;
 
     }
