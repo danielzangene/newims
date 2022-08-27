@@ -1,14 +1,7 @@
 package ir.newims.ims.filter.filter;
 
-import java.io.IOException;
-import java.util.Objects;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import ir.newims.ims.filter.FilterCodes;
+import ir.newims.ims.filter.services.UserDetailsServiceImpl;
 import ir.newims.ims.filter.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +10,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import ir.newims.ims.filter.services.UserDetailsServiceImpl;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Objects;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
   @Autowired
@@ -50,6 +49,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
   }
 
   private String parseJwt(HttpServletRequest request) {
-    return request.getHeader(FilterCodes.AUTHORIZATION);
+    String authHeader = request.getHeader(FilterCodes.AUTHORIZATION);
+    return StringUtils.hasText(authHeader) ? authHeader : request.getParameter(FilterCodes.AUTHORIZATION);
   }
 }
