@@ -31,10 +31,17 @@ public class CalendarUtil {
     public static List<String> findAllMonthDates(Integer year, Integer month) {
         return calendarRepo.findAllMonthDates(year, month);
     }
+    public static Long getMonthWorkDaysNumber(Integer year, Integer month) {
+        return calendarRepo.getMonthWorkDaysNumber(year, month);
+    }
 
     public static List<String> findAllMonthDates(String date) {
         Calendar calDate = CalendarUtil.findByDate(date).get();
         return calendarRepo.findAllMonthDates(calDate.getYear(), calDate.getMonth());
+    }
+    public static Long getMonthWorkDaysNumber(String date) {
+        Calendar calDate = CalendarUtil.findByDate(date).get();
+        return calendarRepo.getMonthWorkDaysNumber(calDate.getYear(), calDate.getMonth());
     }
 
     public static List<String> findAllWeekDates(String date) {

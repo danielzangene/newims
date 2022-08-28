@@ -125,5 +125,10 @@ public class DateUtil {
         }
         throw new Exception("invalid Number Of day");  // TODO: 7/15/2022 change exception type
     }
+
+    public static String getFormatedTime(Integer hour,Integer minute){
+        return String.format("%02d:%02d", hour,minute);
+    }
+
 //1400/12/14-11:24.56.005
 }

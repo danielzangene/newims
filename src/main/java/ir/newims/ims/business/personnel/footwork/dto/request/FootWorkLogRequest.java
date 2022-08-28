@@ -6,8 +6,9 @@ public class FootWorkLogRequest {
     private Long id;
     @NotBlank(message = "تاریخ روز مورد نظر را وارد کنید.")
     private String date;
-    @NotBlank(message = "ساعت ورود/خروج را وارد کنید.")
-    private String time;
+    private Integer hour;
+    private Integer minute;
+
     private String desc;
 
     public Long getId() {
@@ -26,12 +27,20 @@ public class FootWorkLogRequest {
         this.date = date;
     }
 
-    public String getTime() {
-        return time;
+    public Integer getHour() {
+        return hour;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setHour(Integer hour) {
+        this.hour = hour;
+    }
+
+    public Integer getMinute() {
+        return minute;
+    }
+
+    public void setMinute(Integer minute) {
+        this.minute = minute;
     }
 
     public String getDesc() {

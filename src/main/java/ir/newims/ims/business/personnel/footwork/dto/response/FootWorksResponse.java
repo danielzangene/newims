@@ -16,6 +16,17 @@ public class FootWorksResponse {
     @JsonProperty
     private ElementResponse status;
 
+    public FootWorksResponse() {
+    }
+
+    public FootWorksResponse(Long id, String time, String date, String desc, ElementResponse status) {
+        this.id = id;
+        this.time = time;
+        this.date = date;
+        this.desc = desc;
+        this.status = status;
+    }
+
     public Long getId() {
         return id;
     }

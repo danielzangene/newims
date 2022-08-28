@@ -11,18 +11,26 @@ import javax.persistence.Table;
 @Table(name = "t_FootWorkLog")
 public class FootWorkLog extends RequestLog {
 
-    private String time;
+    private Integer hour;
+    private Integer minute;
     private String date;
     private String desc;
 
-
-    @Column(name = "c_time")
-    public String getTime() {
-        return time;
+    @Column(name = "c_hour")
+    public Integer getHour() {
+        return hour;
     }
 
-    public void setTime(String log) {
-        this.time = log;
+    public void setHour(Integer hour) {
+        this.hour = hour;
+    }
+    @Column(name = "c_minute")
+    public Integer getMinute() {
+        return minute;
+    }
+
+    public void setMinute(Integer minute) {
+        this.minute = minute;
     }
 
     @Column(name = "c_date")
@@ -46,9 +54,9 @@ public class FootWorkLog extends RequestLog {
     @Override
     public String description() {
         StringBuilder builder = new StringBuilder();
-        builder.append(time.substring(0, 2));
+        builder.append(hour);
         builder.append(":");
-        builder.append(time.substring(2, 4));
+        builder.append(minute);
         builder.append(" ");
         builder.append(date);
         if (StringUtils.hasText(desc)) {

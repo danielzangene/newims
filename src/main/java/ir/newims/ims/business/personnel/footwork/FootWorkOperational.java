@@ -61,22 +61,23 @@ public class FootWorkOperational implements FootWorkService {
         footWorkLog.setStatus(elementRepo.findByCode(RequestCode.REGISTERED_REQUEST_STATUS).get());
         footWorkRepo.save(footWorkLog);
         requestService.pushNotifReq(footWorkLog);
-        List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDateAndUserOrderByTime(request.getDate(), currentUser);
+        List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDateAndUserOrderByHourAsc(request.getDate(), currentUser);
         return new DayFootWorksResponse(request.getDate(), getTotalDay(footWorkLogs), null, footWorkLogs);
     }
 
     private String getTotalDay(List<FootWorkLog> footWorkLogs) {
         int totalMin = 0;
-        int totalHour = 0;
         if (footWorkLogs.size() > 1) {
             for (int i = 0; i < footWorkLogs.size() && i + 1 < footWorkLogs.size(); i += 2) {
-                totalHour += Math.abs(Integer.valueOf(footWorkLogs.get(i).getTime().substring(0, 2)) - Integer.valueOf(footWorkLogs.get(i + 1).getTime().substring(0, 2)));
-                totalMin += Math.abs(Integer.valueOf(footWorkLogs.get(i).getTime().substring(2, 4)) - Integer.valueOf(footWorkLogs.get(i + 1).getTime().substring(2, 4)));
+                Integer firstHour = footWorkLogs.get(i).getHour();
+                Integer secondHour = footWorkLogs.get(i + 1).getHour();
+                Integer firstMin = footWorkLogs.get(i).getMinute();
+                Integer secondMin = footWorkLogs.get(i + 1).getMinute();
+                totalMin += (secondHour * 60 + secondMin) - (firstHour * 60 + firstMin);
+
             }
         }
-        totalHour += totalMin / 60;
-        totalMin %= 60;
-        return String.format("%02d%02d", totalHour, totalMin);
+        return getFormatedTime(totalMin / 60, totalMin % 60);
     }
 
     private String getTotaDays(List<String> totalDays) {
@@ -85,12 +86,12 @@ public class FootWorkOperational implements FootWorkService {
         if (!totalDays.isEmpty()) {
             for (String totalDay : totalDays) {
                 totalHour += Math.abs(Integer.valueOf(totalDay.substring(0, 2)));
-                totalMin += Math.abs(Integer.valueOf(totalDay.substring(2, 4)));
+                totalMin += Math.abs(Integer.valueOf(totalDay.substring(3, 5)));
             }
         }
         totalHour += totalMin / 60;
         totalMin %= 60;
-        return String.format("%02d%02d", totalHour, totalMin);
+        return getFormatedTime(totalHour, totalMin);
     }
 
     @Override
@@ -103,7 +104,10 @@ public class FootWorkOperational implements FootWorkService {
             FootWorkLog footWorkLog = new FootWorkLog();
             String currentTime = DateUtil.getCurrentTime();
             footWorkLog.setDate(currentDate);
-            footWorkLog.setTime(currentTime.substring(0, 5).replaceAll(":", ""));
+            String hour = currentTime.substring(0, 2);
+            String minute = currentTime.substring(3, 5);
+            footWorkLog.setHour(Integer.parseInt(hour));
+            footWorkLog.setMinute(Integer.parseInt(minute));
             allLogsByDate.add(footWorkLog);
             totalDay = getTotalDay(allLogsByDate);
             isCounting = true;
@@ -119,7 +123,10 @@ public class FootWorkOperational implements FootWorkService {
         String currentDate = DateUtil.getCurrentDate();
         String currentTime = DateUtil.getCurrentTime();
         request.setDate(currentDate);
-        request.setTime(currentTime.substring(0, 5).replaceAll(":", ""));
+        String hour = currentTime.substring(0, 2);
+        String minute = currentTime.substring(3, 5);
+        request.setHour(Integer.parseInt(hour));
+        request.setMinute(Integer.parseInt(minute));
         return saveOrUpdate(request);
     }
 
@@ -150,7 +157,7 @@ public class FootWorkOperational implements FootWorkService {
 
     private List<FootWorkLog> getAllLogsByDate(String date) {
         User currentUser = userService.getCurrentUser();
-        List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDateAndUserOrderByTime(date, currentUser);
+        List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDateAndUserOrderByHourAsc(date, currentUser);
         return footWorkLogs;
     }
 
@@ -167,7 +174,7 @@ public class FootWorkOperational implements FootWorkService {
             throw new BusinessException(ResponseConstant.INVALID_FOOT_WORK_LOG_ID, ResponseConstantMessage.INVALID_FOOT_WORK_LOG_ID);
         });
         footWorkRepo.delete(footWorkLog);
-        List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDateAndUserOrderByTime(footWorkLog.getDate(), currentUser);
+        List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDateAndUserOrderByHourAsc(footWorkLog.getDate(), currentUser);
         return new DayFootWorksResponse(footWorkLog.getDate(), getTotalDay(footWorkLogs), null, footWorkLogs);
     }
 
@@ -177,9 +184,9 @@ public class FootWorkOperational implements FootWorkService {
         return new MonthFootWorkSummaryResponse(
                 DateUtil.getPersianMonth(DateUtil.getCurrentDate()),
                 monthTotalWorkTime,
-                "0100",
-                "0200",
-                "0300"
+                "01:00",
+                "02:00",
+                "03:00"
         );
     }
 
@@ -187,7 +194,6 @@ public class FootWorkOperational implements FootWorkService {
     public MonthFootWorkAllDaysResponse currentMonthAllDaysLog() {
         List<String> monthDaysFootWork = getMonthAllWorkTime(DateUtil.getCurrentDate());
         List<String> previousMonthDaysFootWork = monthDaysFootWork.stream().sorted(Collections.reverseOrder()).collect(Collectors.toList());
-        previousMonthDaysFootWork.remove(previousMonthDaysFootWork.size() - 1);
         if (monthDaysFootWork.size() > previousMonthDaysFootWork.size()) previousMonthDaysFootWork.add("0000");
         if (monthDaysFootWork.size() < previousMonthDaysFootWork.size()) monthDaysFootWork.add("0000");
         return new MonthFootWorkAllDaysResponse(
@@ -251,6 +257,8 @@ public class FootWorkOperational implements FootWorkService {
                 DateUtil.getCurrentDate(),
                 daysFootWork
         );
-
+    }
+    String getFormatedTime(Integer hour,Integer minute){
+        return String.format("%02d:%02d", hour,minute);
     }
 }
