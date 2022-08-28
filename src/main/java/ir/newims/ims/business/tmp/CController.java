@@ -57,6 +57,6 @@ public class CController {
     @GetMapping("/signup")
     public ResponseEntity<?> registerUser() {
 
-        return ResponseEntity.ok(DateUtil.getWeek(0));
+        return ResponseEntity.ok("test");
     }
 }

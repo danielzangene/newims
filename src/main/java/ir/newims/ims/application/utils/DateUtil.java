@@ -6,7 +6,7 @@ import java.util.*;
 
 public class DateUtil {
 
-    private static String[] persianMoths = new String[]{"فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "بهمن", "اسفند"};
+    private static String[] persianMoths = new String[]{"test","فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی","بهمن", "اسفند"};
     private static String[] daysOfWeek = new String[]{"شنبه", "یک\u200Cشنبه", "دوشنبه", "سه\u200Cشنبه", "چهارشنبه", "پنج\u200Cشنبه", "جمعه"};
 
     public static String getCurrentDate() {
@@ -20,53 +20,6 @@ public class DateUtil {
         int year = persianCalendar.getDateFields().getYear();
         persianCalendar.setTime(clonedCal.getTime());
         return getDate(year, month, day);
-    }
-
-    public static String getCurrentDate(Calendar cal) {
-        SimplePersianCalendar persianCalendar = new SimplePersianCalendar();
-        Calendar clonedCal = (Calendar) cal.clone();
-        cal.set(Calendar.HOUR_OF_DAY, 6);
-        persianCalendar.setTime(cal.getTime());
-        int day = persianCalendar.getDateFields().getDay();
-        int month = persianCalendar.getDateFields().getMonth() + 1;
-        int year = persianCalendar.getDateFields().getYear();
-        persianCalendar.setTime(clonedCal.getTime());
-        return getDate(year, month, day);
-    }
-
-    public static List<String> getWeek(int threshold) {
-        String[] days = new String[7];
-        Calendar now = Calendar.getInstance();
-        int delta = -now.get(GregorianCalendar.DAY_OF_WEEK) + (threshold * 7);
-        now.add(Calendar.DAY_OF_MONTH, delta);
-        for (int i = 0; i < 7; i++) {
-            days[i] = getCurrentDate(now);
-            now.add(Calendar.DAY_OF_MONTH, 1);
-        }
-        return Arrays.asList(days);
-    }
-
-    public static List<String> getMonth() {
-        SimplePersianCalendar persianCalendar = new SimplePersianCalendar();
-        Calendar cal = Calendar.getInstance();
-        Calendar clonedCal = (Calendar) cal.clone();
-        cal.set(Calendar.HOUR_OF_DAY, 6);
-        persianCalendar.setTime(cal.getTime());
-
-        int actualMaximumDaysInMonth = persianCalendar.getActualMaximum(SimplePersianCalendar.DAY_OF_MONTH);
-        int month = persianCalendar.getDateFields().getMonth() + 1;
-        int year = persianCalendar.getDateFields().getYear();
-
-        List<String> days = new LinkedList<>();
-        for (int i = 1; i <= actualMaximumDaysInMonth; i++) {
-            days.add(getDate(year, month, i));
-        }
-        return days;
-    }
-
-
-    public static List<String> thisWeek() {
-        return getWeek(0);
     }
 
     public static String getCurrentDateTime() {
@@ -105,7 +58,7 @@ public class DateUtil {
         return persianTime;
     }
 
-    private static String getDate(int year, int month, int day) {
+    public static String getDate(int year, int month, int day) {
         return String.format("%04d/%02d/%02d", year, month, day);
     }
 

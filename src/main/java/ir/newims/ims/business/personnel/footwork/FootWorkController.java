@@ -2,7 +2,6 @@ package ir.newims.ims.business.personnel.footwork;
 
 import ir.newims.ims.ResponseConstant;
 import ir.newims.ims.ResponseConstantMessage;
-import ir.newims.ims.application.utils.DateUtil;
 import ir.newims.ims.business.personnel.footwork.dto.request.DeleteFootWorkLogRequest;
 import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkDaySheetRequest;
 import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkLogRequest;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -26,8 +24,7 @@ public class FootWorkController {
 
     @PatchMapping("/week")
     public ResponseEntity<?> getWeekFootWork(@RequestBody() FootWorkWeekSheetRequest request) {
-        List<String> week = DateUtil.getWeek(request.getWeekOfToday());
-        WeekFootWorksResponse allLogsOfWeek = footWorkService.getAllLogsOfWeek(week);
+        WeekFootWorksResponse allLogsOfWeek = footWorkService.getAllLogsOfWeek(request);
         return ResponseEntity.ok(new DataResponse(ResponseConstant.SC_OK,
                 ResponseConstantMessage.SC_OK,
                 allLogsOfWeek));

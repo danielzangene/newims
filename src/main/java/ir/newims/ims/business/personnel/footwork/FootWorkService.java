@@ -3,6 +3,7 @@ package ir.newims.ims.business.personnel.footwork;
 import ir.newims.ims.business.personnel.footwork.dto.request.DeleteFootWorkLogRequest;
 import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkDaySheetRequest;
 import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkLogRequest;
+import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkWeekSheetRequest;
 import ir.newims.ims.business.personnel.footwork.dto.response.*;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ public interface FootWorkService {
 
     DayFootWorksResponse addCurrentLog();
 
-    WeekFootWorksResponse getAllLogsOfWeek(List<String> days);
+    WeekFootWorksResponse getAllLogsOfWeek(FootWorkWeekSheetRequest request);
 
     DayFootWorksResponse getAllLogsByDate(FootWorkDaySheetRequest request);
 

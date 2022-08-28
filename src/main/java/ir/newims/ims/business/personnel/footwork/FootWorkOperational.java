@@ -3,17 +3,18 @@ package ir.newims.ims.business.personnel.footwork;
 import ir.newims.ims.ResponseConstant;
 import ir.newims.ims.ResponseConstantMessage;
 import ir.newims.ims.application.utils.DateUtil;
+import ir.newims.ims.business.management.calendar.CalendarUtil;
 import ir.newims.ims.business.management.element.ElementRepo;
-import ir.newims.ims.business.personnel.PersonnelCode;
 import ir.newims.ims.business.personnel.footwork.dto.request.DeleteFootWorkLogRequest;
 import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkDaySheetRequest;
 import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkLogRequest;
+import ir.newims.ims.business.personnel.footwork.dto.request.FootWorkWeekSheetRequest;
 import ir.newims.ims.business.personnel.footwork.dto.response.*;
-import ir.newims.ims.business.personnel.leaverequest.LeaveRequestCode;
 import ir.newims.ims.business.personnel.personnel.UserService;
 import ir.newims.ims.business.personnel.request.RequestCode;
 import ir.newims.ims.business.personnel.request.RequestService;
 import ir.newims.ims.exception.BusinessException;
+import ir.newims.ims.models.management.Calendar;
 import ir.newims.ims.models.personnel.footwork.FootWorkLog;
 import ir.newims.ims.models.personnel.personnel.User;
 import org.springframework.beans.BeanUtils;
@@ -39,6 +40,7 @@ public class FootWorkOperational implements FootWorkService {
 
     @Autowired
     UserService userService;
+
 
     @Override
     public DayFootWorksResponse saveOrUpdate(FootWorkLogRequest request) {
@@ -122,7 +124,11 @@ public class FootWorkOperational implements FootWorkService {
     }
 
     @Override
-    public WeekFootWorksResponse getAllLogsOfWeek(List<String> days) {
+    public WeekFootWorksResponse getAllLogsOfWeek(FootWorkWeekSheetRequest request) {
+
+        String currentDate = DateUtil.getCurrentDate();
+        Calendar date = CalendarUtil.findByDate(currentDate).get();
+        List<String> days = CalendarUtil.findAllWeekDates(date.getYear(), date.getWeek() + request.getWeekOfToday());
         User currentUser = userService.getCurrentUser();
         List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDatesAndUser(days, currentUser);
         Map<String, List<FootWorkLog>> footWorkLogMap = footWorkLogs.stream().collect(Collectors.groupingBy(FootWorkLog::getDate));
@@ -204,7 +210,7 @@ public class FootWorkOperational implements FootWorkService {
     }
 
     private List<String> getMonthAllWorkTime(String dayOfMonth) {
-        List<String> month = DateUtil.getMonth();
+        List<String> month = CalendarUtil.findAllMonthDates(DateUtil.getCurrentDate());
         String substring = dayOfMonth.substring(0, 8);
         List<FootWorkLog> allThisMonthLog = footWorkRepo.findAllThisMonthLog(substring, userService.getCurrentUser());
         Map<String, List<FootWorkLog>> footWorkLogMap = allThisMonthLog.stream().collect(Collectors.groupingBy(FootWorkLog::getDate));
@@ -219,7 +225,7 @@ public class FootWorkOperational implements FootWorkService {
 
     @Override
     public WeekFootWorksSummaryResponse currentWeekSummary() throws Exception {
-        List<String> days = DateUtil.getWeek(0);
+        List<String> days = CalendarUtil.findAllWeekDates(DateUtil.getCurrentDate());
         User currentUser = userService.getCurrentUser();
         List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDatesAndUser(days, currentUser);
         Map<String, List<FootWorkLog>> footWorkLogMap = footWorkLogs.stream().collect(Collectors.groupingBy(FootWorkLog::getDate));

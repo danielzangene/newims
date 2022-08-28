@@ -2,14 +2,18 @@ package ir.newims.ims.business;
 
 import ir.newims.ims.ResponseConstant;
 import ir.newims.ims.ResponseConstantMessage;
+import ir.newims.ims.application.utils.DateUtil;
+import ir.newims.ims.business.management.calendar.CalendarRepo;
 import ir.newims.ims.business.management.element.ElementRepo;
 import ir.newims.ims.business.management.element.TypeRepo;
 import ir.newims.ims.business.management.element.dto.ElementDto;
 import ir.newims.ims.business.management.element.dto.TypeDto;
 import ir.newims.ims.business.personnel.leaverequest.LeaveRequestCode;
 import ir.newims.ims.business.personnel.request.RequestCode;
+import ir.newims.ims.business.tmp.StaticValues;
 import ir.newims.ims.exception.BusinessException;
 import ir.newims.ims.filter.filter.AccessFilter;
+import ir.newims.ims.models.management.Calendar;
 import ir.newims.ims.models.management.Element;
 import ir.newims.ims.models.management.Type;
 import org.slf4j.Logger;
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -31,6 +36,8 @@ public class Initializer {
     ElementRepo elementRepo;
     @Autowired
     TypeRepo typeRepo;
+    @Autowired
+    CalendarRepo calendarRepo;
 
     private List<ElementDto> elements = new LinkedList<>();
     private List<TypeDto> types = new LinkedList<>();
@@ -43,6 +50,45 @@ public class Initializer {
 
         persistType();
         persistElement();
+        initCalendar(1400,1);
+        initCalendar(1401,2);
+        initCalendar(1402,3);
+    }
+
+    private void initCalendar(Integer year, Integer firstDayOfYearWeekNumber) {
+        boolean notInitializeYet = calendarRepo.findByDate(DateUtil.getDate(year, 1, 1)).isEmpty();
+        if (notInitializeYet) {
+            for (int month = 1; month <= 12; month++) {
+                for (int day = 1; day <= 31; day++) {
+                    if (month > 6 && day == 31) continue;
+                    String date = DateUtil.getDate(year, month, day);
+                    Integer dayOfWeek = firstDayOfYearWeekNumber % 7;
+                    Integer week = (firstDayOfYearWeekNumber / 7) + 1;
+                    calendarRepo.save(
+                            new Calendar()
+                                    .setYear(year)
+                                    .setMonth(month)
+                                    .setDay(day)
+                                    .setDate(date)
+                                    .setDayOfWeek(dayOfWeek)
+                                    .setWeek(week)
+                                    .setOff(dayOfWeek==6)
+                    );
+                    firstDayOfYearWeekNumber++;
+                }
+            }
+            calendarRepo.delete(calendarRepo.findByDate(DateUtil.getDate(year, 12, 30)).get());
+            initOffOfficialDays(StaticValues.offOfficialDays.get(year));
+        }
+    }
+
+    private void initOffOfficialDays(List<String> days) {
+        if (Objects.nonNull(days))
+            days.parallelStream().forEach(day ->
+                    calendarRepo.findByDate(day).ifPresent(date -> {
+                        calendarRepo.save(date.setOff(Boolean.TRUE));
+                    })
+            );
     }
 
 
