@@ -6,7 +6,7 @@ import java.util.*;
 
 public class DateUtil {
 
-    private static String[] persianMoths = new String[]{"test","فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی","بهمن", "اسفند"};
+    private static String[] persianMoths = new String[]{"null","فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی","بهمن", "اسفند"};
     private static String[] daysOfWeek = new String[]{"شنبه", "یک\u200Cشنبه", "دوشنبه", "سه\u200Cشنبه", "چهارشنبه", "پنج\u200Cشنبه", "جمعه"};
 
     public static String getCurrentDate() {
