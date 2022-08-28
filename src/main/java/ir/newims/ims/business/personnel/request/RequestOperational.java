@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class RequestOperational implements RequestService {
@@ -140,14 +141,15 @@ public class RequestOperational implements RequestService {
 
     @Override
     public void pushNotifReq(RequestLog requestLog) {
-        String supervisorUsername = requestLog.getUser().getSupervisor().getUsername();
-        RequestSummaryResponse requestSummaryResponse = new RequestSummaryResponse(
-                requestLog.getId(),
-                requestLog.getUser().getName(),
-                getElementResponse(requestLog.getType()),
-                requestLog.description()
-        );
-        simpMessagingTemplate.convertAndSendToUser(supervisorUsername, "/notif", requestSummaryResponse);
-
+        User supervisor = requestLog.getUser().getSupervisor();
+        if (Objects.nonNull(supervisor)) {
+            RequestSummaryResponse requestSummaryResponse = new RequestSummaryResponse(
+                    requestLog.getId(),
+                    requestLog.getUser().getName(),
+                    getElementResponse(requestLog.getType()),
+                    requestLog.description()
+            );
+            simpMessagingTemplate.convertAndSendToUser(supervisor.getUsername(), "/notif", requestSummaryResponse);
+        }
     }
 }
