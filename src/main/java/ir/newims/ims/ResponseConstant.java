@@ -62,4 +62,7 @@ public interface ResponseConstant {
     Integer INVALID_LEAVE_REQUEST_LOG_DATA = 1006001;
     Integer INVALID_LEAVE_REQUEST_LOG_ID = 1006002;
 
+    //dining 101000
+    Integer INVALID_DINING_MONTH_FROM_NOW = 101001;
+
 }

@@ -16,6 +16,8 @@ public interface CalendarRepo extends JpaRepository<Calendar, Long> {
 
     List<Calendar> findAllByYearAndWeek(Integer year, Integer week);
 
+    List<Calendar> findAllByYearAndMonth(Integer year, Integer week);
+
     @Query("SELECT cal.date FROM Calendar cal " +
             "where cal.year = ?1 " +
             "and cal.week = ?2")
@@ -32,6 +34,7 @@ public interface CalendarRepo extends JpaRepository<Calendar, Long> {
             "and cal.off = false " +
             "and cal.dayOfWeek <> 5")
     Long getMonthWorkDaysNumber(@Param("year") Integer year, @Param("week") Integer month);
+
 
 
 }

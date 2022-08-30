@@ -55,4 +55,7 @@ public interface ResponseConstantMessage {
     String INVALID_FOOT_WORK_LOG_ID  = "ایدی لاگ مورد نظر به درستی وارد نشده.";
 
     String INVALID_LEAVE_REQUEST_LOG_ID  = "ایدی لاگ مورد نظر به درستی وارد نشده.";
+
+    //dining 101000
+    String INVALID_DINING_MONTH_FROM_NOW = "رزرواسیون برای ماه های پیش مقدور نمیباشد.";
 }

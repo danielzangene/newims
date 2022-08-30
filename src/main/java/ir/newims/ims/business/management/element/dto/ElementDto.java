@@ -1,5 +1,7 @@
 package ir.newims.ims.business.management.element.dto;
 
+import ir.newims.ims.models.management.Element;
+
 public class ElementDto {
 
     private String name;
@@ -10,6 +12,12 @@ public class ElementDto {
         this.name = name;
         this.code = code;
         this.typeCode = typeCode;
+    }
+
+    public ElementDto(Element element) {
+        this.name = element.getName();
+        this.code = element.getCode();
+        this.typeCode =element.getType().getCode();
     }
 
     public String getName() {

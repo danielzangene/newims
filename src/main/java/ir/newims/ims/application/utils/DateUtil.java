@@ -22,6 +22,20 @@ public class DateUtil {
         return getDate(year, month, day);
     }
 
+    public static String getCurrentDate(Integer fromNow) {
+        SimplePersianCalendar persianCalendar = new SimplePersianCalendar();
+        Calendar cal = Calendar.getInstance();
+        Calendar clonedCal = (Calendar) cal.clone();
+        cal.add(Calendar.DATE, fromNow);
+        cal.set(Calendar.HOUR_OF_DAY, 6);
+        persianCalendar.setTime(cal.getTime());
+        int day = persianCalendar.getDateFields().getDay();
+        int month = persianCalendar.getDateFields().getMonth() + 1;
+        int year = persianCalendar.getDateFields().getYear();
+        persianCalendar.setTime(clonedCal.getTime());
+        return getDate(year, month, day);
+    }
+
     public static String getCurrentDateTime() {
         SimplePersianCalendar persianCalendar = new SimplePersianCalendar();
         Calendar cal = Calendar.getInstance();
@@ -95,6 +109,10 @@ public class DateUtil {
         return daysOfWeek[dayOfWeek] + "  " + Integer.valueOf(splittedDate[2]) + "  " + persianMoths[Integer.valueOf(splittedDate[1])];
     }
 
+    public static String getFormattedDate(Integer year, Integer month) {
+        return persianMoths[month] + "  " + year;
+    }
+
     public static String getFormattedDateWithoutName(String date) {
         String[] splittedDate = date.split("/");
         return Integer.valueOf(splittedDate[2]) + "  " + persianMoths[Integer.valueOf(splittedDate[1])];
@@ -105,9 +123,13 @@ public class DateUtil {
         return persianMoths[Integer.valueOf(splittedDate[1])];
     }
 
-    public static String getFormattedWeek(List<String> days) {
-        String[] splittedFirstDate = days.get(0).split("/");
-        String[] splittedLastDate = days.get(6).split("/");
+    public static String getPersianMonth(Integer month) {
+        return persianMoths[month] + " ماه";
+    }
+
+    public static String getFormattedWeek(List<ir.newims.ims.models.management.Calendar> days) {
+        String[] splittedFirstDate = days.get(0).getDate().split("/");
+        String[] splittedLastDate = days.get(6).getDate().split("/");
         Integer firstDayMounth = Integer.valueOf(splittedFirstDate[1]);
         Integer lastDayMounth = Integer.valueOf(splittedLastDate[1]);
         Integer firstDay = Integer.valueOf(splittedFirstDate[2]);

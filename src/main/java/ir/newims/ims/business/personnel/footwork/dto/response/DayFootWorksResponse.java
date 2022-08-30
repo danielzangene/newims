@@ -15,14 +15,17 @@ public class DayFootWorksResponse {
     @JsonProperty
     private String date;
     @JsonProperty
+    private Boolean off;
+    @JsonProperty
     private String formattedDate;
     @JsonProperty
     private String totalDay;
     @JsonProperty
     private List<FootWorksResponse> footWorks;
 
-    public DayFootWorksResponse(String date, String totalDay, String formattedDate, List<FootWorkLog> footWorks) {
+    public DayFootWorksResponse(String date,Boolean off, String totalDay, String formattedDate, List<FootWorkLog> footWorks) {
         this.date = date;
+        this.off = off;
         this.formattedDate = formattedDate;
         this.totalDay = totalDay;
         this.footWorks = Objects.nonNull(footWorks) ? footWorks.stream().map(footWorkLog -> {

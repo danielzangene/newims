@@ -62,7 +62,7 @@ public class FootWorkOperational implements FootWorkService {
         footWorkRepo.save(footWorkLog);
         requestService.pushNotifReq(footWorkLog);
         List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDateAndUserOrderByHourAsc(request.getDate(), currentUser);
-        return new DayFootWorksResponse(request.getDate(), getTotalDay(footWorkLogs), null, footWorkLogs);
+        return new DayFootWorksResponse(request.getDate(), null, getTotalDay(footWorkLogs), null, footWorkLogs);
     }
 
     private String getTotalDay(List<FootWorkLog> footWorkLogs) {
@@ -135,16 +135,21 @@ public class FootWorkOperational implements FootWorkService {
 
         String currentDate = DateUtil.getCurrentDate();
         Calendar date = CalendarUtil.findByDate(currentDate).get();
-        List<String> days = CalendarUtil.findAllWeekDates(date.getYear(), date.getWeek() + request.getWeekOfToday());
+        List<Calendar> days = CalendarUtil.findAllByYearAndWeek(date.getYear(), date.getWeek() + request.getWeekOfToday());
+
         User currentUser = userService.getCurrentUser();
-        List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDatesAndUser(days, currentUser);
+        List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDatesAndUser(
+                days.stream().map(Calendar::getDate).collect(Collectors.toList()),
+                currentUser
+        );
         Map<String, List<FootWorkLog>> footWorkLogMap = footWorkLogs.stream().collect(Collectors.groupingBy(FootWorkLog::getDate));
         List<DayFootWorksResponse> daysFootWork = new ArrayList<>();
         String formattedWeek = DateUtil.getFormattedWeek(days);
         for (int i = 0; i < days.size(); i++) {
-            String key = days.get(i);
+            Calendar day = days.get(i);
+            String key = day.getDate();
             List<FootWorkLog> footWorkLogsOfDay = footWorkLogMap.containsKey(key) ? footWorkLogMap.get(key) : new ArrayList<>();
-            daysFootWork.add(new DayFootWorksResponse(key, getTotalDay(footWorkLogsOfDay), DateUtil.getFormattedDate(key, i), footWorkLogsOfDay));
+            daysFootWork.add(new DayFootWorksResponse(key, day.getOff(), getTotalDay(footWorkLogsOfDay), DateUtil.getFormattedDate(key, i), footWorkLogsOfDay));
         }
 
         return new WeekFootWorksResponse(
@@ -164,7 +169,7 @@ public class FootWorkOperational implements FootWorkService {
     @Override
     public DayFootWorksResponse getAllLogsByDate(FootWorkDaySheetRequest request) {
         List<FootWorkLog> allLogsByDate = getAllLogsByDate(request.getDate());
-        return new DayFootWorksResponse(request.getDate(), getTotalDay(allLogsByDate), null, allLogsByDate);
+        return new DayFootWorksResponse(request.getDate(), null, getTotalDay(allLogsByDate), null, allLogsByDate);
     }
 
     @Override
@@ -175,7 +180,7 @@ public class FootWorkOperational implements FootWorkService {
         });
         footWorkRepo.delete(footWorkLog);
         List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDateAndUserOrderByHourAsc(footWorkLog.getDate(), currentUser);
-        return new DayFootWorksResponse(footWorkLog.getDate(), getTotalDay(footWorkLogs), null, footWorkLogs);
+        return new DayFootWorksResponse(footWorkLog.getDate(), null, getTotalDay(footWorkLogs), null, footWorkLogs);
     }
 
     @Override
@@ -236,7 +241,6 @@ public class FootWorkOperational implements FootWorkService {
         List<FootWorkLog> footWorkLogs = footWorkRepo.findAllByDatesAndUser(days, currentUser);
         Map<String, List<FootWorkLog>> footWorkLogMap = footWorkLogs.stream().collect(Collectors.groupingBy(FootWorkLog::getDate));
         List<DayFootWorkSummaryResponse> daysFootWork = new ArrayList<>();
-        String formattedWeek = DateUtil.getFormattedWeek(days);
         for (int i = 0; i < days.size(); i++) {
             String key = days.get(i);
             List<FootWorkLog> footWorkLogsOfDay = footWorkLogMap.containsKey(key) ? footWorkLogMap.get(key) : new ArrayList<>();
@@ -253,7 +257,7 @@ public class FootWorkOperational implements FootWorkService {
             ));
         }
         return new WeekFootWorksSummaryResponse(
-                formattedWeek,
+                null,
                 DateUtil.getCurrentDate(),
                 daysFootWork
         );

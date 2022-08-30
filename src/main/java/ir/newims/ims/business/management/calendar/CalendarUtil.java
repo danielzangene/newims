@@ -1,5 +1,6 @@
 package ir.newims.ims.business.management.calendar;
 
+import ir.newims.ims.application.utils.DateUtil;
 import ir.newims.ims.models.management.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,8 +21,16 @@ public class CalendarUtil {
         return calendarRepo.findByDate(date);
     }
 
+    public static Calendar getCurrentDate() {
+        return calendarRepo.findByDate(DateUtil.getCurrentDate()).get();
+    }
+
     public static List<Calendar> findAllByYearAndWeek(Integer year, Integer week) {
         return calendarRepo.findAllByYearAndWeek(year, week);
+    }
+
+    public static List<Calendar> findAllByYearAndMonth(Integer year, Integer month) {
+        return calendarRepo.findAllByYearAndMonth(year, month);
     }
 
     public static List<String> findAllWeekDates(Integer year, Integer week) {
