@@ -47,15 +47,15 @@ public class Initializer {
 
     @PostConstruct
     private void init() {
-        addElement();
-        addTypes();
-
-        persistType();
-        persistElement();
-
-        initCalendar(1400,1);
-        initCalendar(1401,2);
-        initCalendar(1402,3);
+//        addElement();
+//        addTypes();
+//
+//        persistType();
+//        persistElement();
+//
+//        initCalendar(1400,1);
+//        initCalendar(1401,2);
+//        initCalendar(1402,3);
 
 //        initShaHrivarDiningItems();
 

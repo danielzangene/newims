@@ -15,7 +15,7 @@ public class Type extends SimpleEntity {
     public String getCode() {
         return code;
     }
-    @OneToMany(mappedBy = "type")
+    @OneToMany(mappedBy = "type", fetch = FetchType.EAGER)
     @OrderColumn(name = "i_index")
     public List<Element> getElements() {
         return elements;
