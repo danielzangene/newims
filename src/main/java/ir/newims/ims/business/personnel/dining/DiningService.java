@@ -6,12 +6,12 @@ import ir.newims.ims.business.personnel.dining.dto.response.DateFoodsResponse;
 import ir.newims.ims.business.personnel.dining.dto.response.MonthDaysDiningResponse;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public interface DiningService {
 
     MonthDaysDiningResponse getMonth(MonthDaysDiningRequest requestDto);
 
-    List<DateFoodsResponse> getFoods(DateMealDiningRequest request);
+    DateFoodsResponse getFoods(DateMealDiningRequest request);
+
+    DateFoodsResponse reserveFood(DateMealDiningRequest request);
 }

@@ -17,7 +17,7 @@ public class DiningItem extends SimpleEntity {
     private String name;
     private Element type;
 
-    @Column(name = "c_hour")
+    @Column(name = "c_date")
     public String getDate() {
         return date;
     }

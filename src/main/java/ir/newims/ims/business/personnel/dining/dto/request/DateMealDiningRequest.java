@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class DateMealDiningRequest {
 
+    private Long id;
     private String date;
     private int foodType;
 

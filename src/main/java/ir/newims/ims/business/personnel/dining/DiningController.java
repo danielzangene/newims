@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/v1/personnel/dining")
@@ -31,13 +29,18 @@ public class DiningController {
 
     @PatchMapping("/food")
     public ResponseEntity<?> getWeekFootWork(@RequestBody() DateMealDiningRequest request) {
-        List<DateFoodsResponse> foods = diningService.getFoods(request);
+        DateFoodsResponse foods = diningService.getFoods(request);
         return ResponseEntity.ok(new DataResponse(ResponseConstant.SC_OK,
                 ResponseConstantMessage.SC_OK,
                 foods));
     }
 
-
-
+    @PostMapping("/food")
+    public ResponseEntity<?> reserveFood(@RequestBody() DateMealDiningRequest request) {
+        DateFoodsResponse foods = diningService.reserveFood(request);
+        return ResponseEntity.ok(new DataResponse(ResponseConstant.SC_OK,
+                ResponseConstantMessage.SC_OK,
+                foods));
+    }
 
 }

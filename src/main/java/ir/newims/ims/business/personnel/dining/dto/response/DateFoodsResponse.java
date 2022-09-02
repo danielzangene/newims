@@ -1,22 +1,18 @@
 package ir.newims.ims.business.personnel.dining.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import ir.newims.ims.business.management.element.dto.ElementDto;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 public class DateFoodsResponse {
 
     @JsonProperty
-    private Long id;
+    List<DateFoodResponse> foods;
     @JsonProperty
-    private String name;
-    @JsonProperty
-    private String date;
-    @JsonProperty
-    private ElementDto type;
+    DateFoodResponse reservedItem;
 
 }

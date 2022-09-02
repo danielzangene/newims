@@ -21,5 +21,9 @@ public class MonthDaysDiningResponse {
     private String month;
     @JsonProperty
     private List<MonthDayDiningResponse> days;
+    @JsonProperty
+    private List<String> reservedDates;
+
+
 
 }
