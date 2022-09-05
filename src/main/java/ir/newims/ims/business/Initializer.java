@@ -58,6 +58,7 @@ public class Initializer {
 //        initCalendar(1402,3);
 
 //        initShaHrivarDiningItems();
+//        initMehrDiningItems();
 
     }
 
@@ -120,6 +121,66 @@ public class Initializer {
                 for (String dessert : desserts) {
                     diningRepo.save(new DiningItem().setDate(date).setName(dessert).setType(dessertType));
                 }
+            }
+        }
+    }
+
+    private void initMehrDiningItems() {
+        Map<String, List<String>> mainMeals = new HashMap<>() {{
+            put("1401/07/01", Arrays.asList("چلوخورشت قیمه بادمجان", "کوکوسیب زمینی", "سالادیونانی"));
+            put("1401/07/02", Arrays.asList("کلم پلو", "شنیسل مرغ", "بشقاب سبزیجات"));
+            put("1401/07/03", Arrays.asList("چلوجوجه کباب"));
+            put("1401/07/04", Arrays.asList("چلوکباب لقمه"));
+            put("1401/07/05", Arrays.asList("زرشک پلوبامرغ", "بادمجان شکم پر", "سالادسزار"));
+            put("1401/07/06", Arrays.asList("لوبیاپلو", "خوراک کباب لقمه", "سالادکینوا"));
+            put("1401/07/07", Arrays.asList("چلوجوجه کباب", "کشک بادمجان", "بشقاب سبزیجات"));
+            put("1401/07/08", Arrays.asList("چلوکباب لقمه", "دیزی", "سالادکلم بروکلی"));
+            put("1401/07/09", Arrays.asList("باقالی پلوبامرغ"));
+            put("1401/07/10", Arrays.asList("زرشک پلو"));
+            put("1401/07/11", Arrays.asList("چلوجوجه کباب"));
+            put("1401/07/12", Arrays.asList("چلوخورشت قیمه بادمجان", "کوکوسیب زمینی", "سالادیونانی"));
+            put("1401/07/13", Arrays.asList("کلم پلو", "شنیسل مرغ", "بشقاب سبزیجات"));
+            put("1401/07/14", Arrays.asList("چلوخورشت مسمابامرغ", "خوراک جوجه", "سالادسبز"));
+            put("1401/07/15", Arrays.asList("چلو کباب لقمه", "میرزاقاسمی", "سالادسزار"));
+            put("1401/07/16", Arrays.asList("ماکارانی", "جوجه چینی", "سالادمرغ وسبزیجات"));
+            put("1401/07/17", Arrays.asList("چلوکباب لقمه"));
+            put("1401/07/18", Arrays.asList("چلوجوجه کباب"));
+            put("1401/07/19", Arrays.asList("چلوخورشت قورمه سبزی", "خوراک جوجه", "سالادکینوا"));
+            put("1401/07/20", Arrays.asList("چلوکباب لقمه", "دلمه فلفل بادمجان", "سالادسزار"));
+            put("1401/07/21", Arrays.asList("چلوجوجه کباب", "خوراک لقمه", "سالادسبز"));
+            put("1401/07/22", Arrays.asList("چلوخورشت بامیه", "خوراک جوجه", "سالادیونانی"));
+            put("1401/07/23", Arrays.asList("استامبولی", "لازانیای گوشت", "سالادماکارانی"));
+            put("1401/07/24", Arrays.asList("سبزی پلوبامرغ"));
+            put("1401/07/25", Arrays.asList("چلوکباب لقمه"));
+            put("1401/07/26", Arrays.asList("چلوجوجه کباب"));
+            put("1401/07/27", Arrays.asList("چلوخورشت کرفس", "سالادالویه", "سالادکلم بروکلی"));
+            put("1401/07/28", Arrays.asList("پلویونانی", "خوراک جوجه", "بشقاب سبزیجات"));
+            put("1401/07/29", Arrays.asList("چلوجوجه کباب", "خوراک کباب لقمه", "سالادیونانی"));
+            put("1401/07/30", Arrays.asList("خورشت قیمه سیب زمینی", "کوکوسیب زمینی", "سالادمرغ وسبزیجات"));
+            put("1401/07/31", Arrays.asList("رشته پلوباگوشت", "خوراک کباب لقمه", "سالادسبز"));
+        }};
+
+        Element mainMealType = elementRepo.findByCode(DiningCode.MAIN_MEAL_TYPE).get();
+
+        for (String date : mainMeals.keySet()) {
+            for (String mealName : mainMeals.get(date)) {
+                diningRepo.save(new DiningItem().setDate(date).setName(mealName).setType(mainMealType));
+            }
+        }
+
+        Element drinkType = elementRepo.findByCode(DiningCode.DRINK_MEAL_TYPE).get();
+        List<String> drinks = Arrays.asList("دلستر", "نوشابه", "دوع");
+        for (String date : mainMeals.keySet()) {
+            for (String drink : drinks) {
+                diningRepo.save(new DiningItem().setDate(date).setName(drink).setType(drinkType));
+            }
+        }
+
+        Element dessertType = elementRepo.findByCode(DiningCode.DESSERT_MEAL_TYPE).get();
+        List<String> desserts = Arrays.asList("ماست", "سالاد");
+        for (String date : mainMeals.keySet()) {
+            for (String dessert : desserts) {
+                diningRepo.save(new DiningItem().setDate(date).setName(dessert).setType(dessertType));
             }
         }
     }
