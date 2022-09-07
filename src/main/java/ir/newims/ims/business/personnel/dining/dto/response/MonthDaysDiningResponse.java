@@ -24,6 +24,4 @@ public class MonthDaysDiningResponse {
     @JsonProperty
     private List<String> reservedDates;
 
-
-
 }

@@ -83,13 +83,10 @@ public class DiningOperational implements DiningService {
         Optional<DiningItem> foodItem = diningRepo.findById(request.getId());
         List<ReserveItem> reserveItems = reserveItemRepo.reserveItemByDiningItemDate(foodItem.get().getDate(),
                 foodItem.get().getType());
-        ReserveItem reserveItem;
-        if (reserveItems.isEmpty()) {
-            reserveItem = new ReserveItem().setDiningItem(foodItem.get()).setUser(userService.getCurrentUser());
-        } else {
-            reserveItem = reserveItems.get(0);
-            reserveItem.setDiningItem(foodItem.get());
+        if (!reserveItems.isEmpty()) {
+            reserveItemRepo.deleteAll(reserveItems);
         }
+        ReserveItem reserveItem = new ReserveItem().setDiningItem(foodItem.get()).setUser(userService.getCurrentUser());
         reserveItemRepo.save(reserveItem);
     }
 
