@@ -33,8 +33,8 @@ public class User extends BaseEntity {
     @Size(max = 1000)
     private String name;
 
-    @NotBlank
-    @Size(max = 1000)
+//    @NotBlank
+//    @Size(max = 1000)
     private String role;
 
     private User supervisor;

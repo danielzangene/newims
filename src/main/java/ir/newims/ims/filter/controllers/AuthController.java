@@ -66,6 +66,6 @@ public class AuthController {
                 );
         userRepository.save(user);
 
-        return ResponseEntity.ok(Response.SUCCESS_RESPONSE);
+        return authenticateUser(signUpRequest);
     }
 }

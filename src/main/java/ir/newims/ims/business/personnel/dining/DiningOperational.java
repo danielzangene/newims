@@ -17,6 +17,7 @@ import ir.newims.ims.models.personnel.dining.ReserveItem;
 import ir.newims.ims.models.personnel.personnel.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -69,22 +70,16 @@ public class DiningOperational implements DiningService {
 
     @Override
     public DateFoodsResponse reserveFood(DateMealDiningRequest request) {
-        if (Objects.isNull(request.getId())) {
-            return doReserveFood(request);
+        if (Objects.nonNull(request.getId())) {
+            doReserveFood(request);
         } else {
-            return removeReservedFood(request);
+            removeReservedFood(request);
         }
-    }
-
-    private DateFoodsResponse doReserveFood(DateMealDiningRequest request) {
-        Element type = typeRepo.findByCode(DiningCode.MEAL_TYPE).get().getElements().get(request.getFoodType());
-        List<ReserveItem> reserveItems = reserveItemRepo.reserveItemByDiningItemDate(request.getDate(), type);
-        reserveItemRepo.deleteAll(reserveItems);
         return getFoods(request);
-
     }
 
-    private DateFoodsResponse removeReservedFood(DateMealDiningRequest request) {
+    @Transactional
+    void doReserveFood(DateMealDiningRequest request) {
         Optional<DiningItem> foodItem = diningRepo.findById(request.getId());
         List<ReserveItem> reserveItems = reserveItemRepo.reserveItemByDiningItemDate(foodItem.get().getDate(),
                 foodItem.get().getType());
@@ -96,6 +91,12 @@ public class DiningOperational implements DiningService {
             reserveItem.setDiningItem(foodItem.get());
         }
         reserveItemRepo.save(reserveItem);
-        return getFoods(request);
+    }
+
+    @Transactional
+    void removeReservedFood(DateMealDiningRequest request) {
+        Element type = typeRepo.findByCode(DiningCode.MEAL_TYPE).get().getElements().get(request.getFoodType());
+        List<ReserveItem> reserveItems = reserveItemRepo.reserveItemByDiningItemDate(request.getDate(), type);
+        reserveItemRepo.deleteAll(reserveItems);
     }
 }
