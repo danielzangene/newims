@@ -40,7 +40,7 @@ public class CalendarUtil {
     public static List<String> findAllMonthDates(Integer year, Integer month) {
         return calendarRepo.findAllMonthDates(year, month);
     }
-    public static Long getMonthWorkDaysNumber(Integer year, Integer month) {
+    public static Integer getMonthWorkDaysNumber(Integer year, Integer month) {
         return calendarRepo.getMonthWorkDaysNumber(year, month);
     }
 
@@ -48,7 +48,7 @@ public class CalendarUtil {
         Calendar calDate = CalendarUtil.findByDate(date).get();
         return calendarRepo.findAllMonthDates(calDate.getYear(), calDate.getMonth());
     }
-    public static Long getMonthWorkDaysNumber(String date) {
+    public static Integer getMonthWorkDaysNumber(String date) {
         Calendar calDate = CalendarUtil.findByDate(date).get();
         return calendarRepo.getMonthWorkDaysNumber(calDate.getYear(), calDate.getMonth());
     }
@@ -56,10 +56,6 @@ public class CalendarUtil {
     public static List<String> findAllWeekDates(String date) {
         Calendar calDate = CalendarUtil.findByDate(date).get();
         return CalendarUtil.findAllWeekDates(calDate.getYear(), calDate.getWeek());
-    }
-
-    public static Calendar findAllWeekDates(Calendar calendar) {
-        return calendarRepo.save(calendar);
     }
 
 

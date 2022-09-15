@@ -33,7 +33,7 @@ public interface CalendarRepo extends JpaRepository<Calendar, Long> {
             "and cal.month = ?2 " +
             "and cal.off = false " +
             "and cal.dayOfWeek <> 5")
-    Long getMonthWorkDaysNumber(@Param("year") Integer year, @Param("week") Integer month);
+    Integer getMonthWorkDaysNumber(@Param("year") Integer year, @Param("week") Integer month);
 
 
 
