@@ -2,15 +2,12 @@ package ir.newims.ims.business.personnel.fiscal;
 
 import ir.newims.ims.application.utils.DateUtil;
 import ir.newims.ims.business.management.calendar.CalendarUtil;
-import ir.newims.ims.business.management.element.ElementRepo;
 import ir.newims.ims.business.personnel.fiscal.dto.request.MonthDaysRequest;
 import ir.newims.ims.business.personnel.fiscal.dto.response.MonthDayResponse;
 import ir.newims.ims.business.personnel.fiscal.dto.response.MonthDaysResponse;
-import ir.newims.ims.business.personnel.footwork.FootWorkCheck;
 import ir.newims.ims.business.personnel.footwork.FootWorkRepo;
 import ir.newims.ims.business.personnel.leaverequest.LeaveRequestRepo;
 import ir.newims.ims.business.personnel.personnel.UserService;
-import ir.newims.ims.business.personnel.request.RequestService;
 import ir.newims.ims.models.management.Calendar;
 import ir.newims.ims.models.personnel.footwork.FootWorkLog;
 import ir.newims.ims.models.personnel.leaverequest.LeaveRequestLog;
@@ -35,17 +32,16 @@ public class FiscalOperational implements FiscalService {
 
     @Override
     public MonthDaysResponse getMonth(MonthDaysRequest requestDto) {
-        String currentDate1 = DateUtil.getCurrentDate(-30);
-        Calendar currentDate = CalendarUtil.findByDate(currentDate1).get();
-        List<Calendar> allByYearAndMonth = CalendarUtil.findAllByYearAndMonth(currentDate.getYear(), currentDate.getMonth());
-        List<MonthDayResponse> daysDiningResponses = new ArrayList<>();
-        Map<String, Integer> footWorkLogMap = getFootWorkLogMap(currentDate);
-        Map<String, Integer> leaveRequestLogMap = getLeaveRequestLogMap(currentDate);
+        List<Calendar> days = getDays(requestDto.getMonthFromNow());
+        Calendar startDate  = days.get(0);
+        Map<String, Integer> footWorkLogMap = getFootWorkLogMap(startDate);
+        Map<String, Integer> leaveRequestLogMap = getLeaveRequestLogMap(startDate);
 
         Integer monthTotalDay = 0;
         Integer monthTotalLeave = 0;
-        Integer standardWorkTime = CalendarUtil.getMonthWorkDaysNumber(currentDate.getYear(), currentDate.getMonth()) * 528;
-        for (Calendar date : allByYearAndMonth) {
+        Integer standardWorkTime = CalendarUtil.getMonthWorkDaysNumber(startDate.getYear(), startDate.getMonth()) * 528;
+        List<MonthDayResponse> daysDiningResponses = new ArrayList<>();
+        for (Calendar date : days) {
             Integer totalDay = Objects.nonNull(footWorkLogMap.get(date.getDate())) ? footWorkLogMap.get(date.getDate()) : 0;
             Integer totalLeave = Objects.nonNull(leaveRequestLogMap.get(date.getDate())) ? leaveRequestLogMap.get(date.getDate()) : 0;
             monthTotalDay += totalDay;
@@ -60,17 +56,25 @@ public class FiscalOperational implements FiscalService {
             daysDiningResponses.add(monthDayResponse);
         }
         return new MonthDaysResponse(
-                DateUtil.getPersianMonth(currentDate.getMonth()),
+                DateUtil.getPersianMonth(startDate.getDate()),
                 getFormattedTime(standardWorkTime),
                 getFormattedTime(monthTotalDay),
                 getFormattedTime(monthTotalLeave),
-                getTotalMonthDays(allByYearAndMonth.size(), monthTotalDay, monthTotalLeave, standardWorkTime),
+                getTotalMonthDays(days.size(), monthTotalDay, monthTotalLeave, standardWorkTime),
                 daysDiningResponses
         );
     }
 
+    private List<Calendar> getDays(Integer monthFromNow ) {
+        Calendar currentDate = CalendarUtil.getCurrentDate();
+        Integer year = currentDate.getYear() + (currentDate.getMonth() + monthFromNow) / 12;
+        Integer month = (currentDate.getMonth() + monthFromNow) % 12;
+        List<Calendar> allByYearAndMonth = CalendarUtil.findAllByYearAndMonth(year, month);
+        return allByYearAndMonth;
+    }
+
     private int getTotalMonthDays(Integer totalMonthDays, Integer monthTotalDay, Integer monthTotalLeave, Integer standardWorkTime) {
-        Integer ceil = (int) Math.ceil(((monthTotalDay + monthTotalLeave) / (double) standardWorkTime) * totalMonthDays);
+        Integer ceil = (int) Math.round(((monthTotalDay + monthTotalLeave) / (double) standardWorkTime) * totalMonthDays);
         return ceil < totalMonthDays ? ceil : totalMonthDays;
     }
 
